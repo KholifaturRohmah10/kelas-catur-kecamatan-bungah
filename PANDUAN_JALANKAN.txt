@@ -1,0 +1,64 @@
+PANDUAN MENJALANKAN PROGRAM KELAS CATUR
+======================================
+
+1. Pastikan XAMPP sudah aktif:
+   - Jalankan Apache
+   - Jalankan MySQL
+
+2. Lokasi project:
+   C:\xampp\htdocs\kelas_catur
+
+3. Konfigurasi database yang dipakai aplikasi:
+   - Nama database : kelas_catur
+   - Host          : 127.0.0.1
+   - Port          : 3306
+   - Username      : root
+   - Password      : (kosong)
+
+4. Jika database belum ada, buat database:
+   Bisa lewat phpMyAdmin atau terminal MySQL dengan nama:
+   kelas_catur
+
+5. Jalankan migration Laravel:
+   Buka terminal di folder project lalu jalankan:
+   php artisan migrate
+
+6. Jalankan server Laravel:
+   php artisan serve
+
+7. Akses aplikasi dari browser:
+   - Jika pakai server bawaan Laravel:
+     http://127.0.0.1:8000
+   - Jika langsung melalui Apache XAMPP:
+     http://localhost/kelas_catur/public
+
+8. Menu utama aplikasi:
+   - Dashboard
+   - Daftar Kelas Catur
+   - Data Siswa
+   - Jadwal Kelas
+   - Perkembangan Siswa
+   - Cetak Rapot
+
+9. Alur penggunaan singkat:
+   - Input siswa dari menu Daftar Kelas Catur
+   - Cek atau edit siswa di menu Data Siswa
+   - Masukkan materi, pilih siswa, dan isi nilai pada menu Jadwal Kelas
+   - Lihat grafik nilai di menu Perkembangan Siswa
+   - Cetak rapot per siswa dari menu Cetak Rapot
+
+10. Output utama sistem:
+   - Indeks sementara per bulan untuk setiap siswa
+   - Rekap nilai per materi
+   - Rapot siap cetak per anak
+
+11. Jika ada perubahan konfigurasi:
+   Jalankan perintah ini:
+   php artisan config:clear
+
+12. Jika ingin refresh database dari awal:
+   php artisan migrate:fresh
+
+Catatan:
+- Nilai siswa diinput pada rentang 0 sampai 100.
+- Nilai yang dimasukkan pada Jadwal Kelas akan otomatis muncul di menu Perkembangan Siswa dan Cetak Rapot.

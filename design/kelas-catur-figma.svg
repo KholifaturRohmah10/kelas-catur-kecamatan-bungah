@@ -1,0 +1,233 @@
+<svg width="2400" height="1600" viewBox="0 0 2400 1600" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <title>Kelas Catur - Figma Ready UI Preview</title>
+  <desc>Import file ini ke Figma untuk melihat konsep tampilan website Kelas Catur dengan warna resmi sekolah.</desc>
+  <defs>
+    <linearGradient id="pageBg" x1="0" y1="0" x2="2400" y2="1600" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F5F9FC"/>
+      <stop offset="1" stop-color="#DBEAF5"/>
+    </linearGradient>
+    <linearGradient id="navBg" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#2F6FA3"/>
+      <stop offset="1" stop-color="#123A63"/>
+    </linearGradient>
+    <linearGradient id="heroBg" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#2F6FA3"/>
+      <stop offset="1" stop-color="#123A63"/>
+    </linearGradient>
+    <linearGradient id="greenAccent" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#2F9879"/>
+      <stop offset="1" stop-color="#236C5B"/>
+    </linearGradient>
+    <pattern id="schoolPattern" width="56" height="56" patternUnits="userSpaceOnUse">
+      <rect width="56" height="56" fill="transparent"/>
+      <path d="M0 0H28V28H0V0ZM28 28H56V56H28V28Z" fill="#123A63" opacity="0.04"/>
+      <path d="M28 0H56V28H28V0ZM0 28H28V56H0V28Z" fill="#FFFFFF" opacity="0.34"/>
+    </pattern>
+    <filter id="cardShadow" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="24" stdDeviation="24" flood-color="#17395B" flood-opacity="0.14"/>
+    </filter>
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="14" stdDeviation="14" flood-color="#17395B" flood-opacity="0.10"/>
+    </filter>
+    <style>
+      .font { font-family: "Trebuchet MS", "Segoe UI", Arial, sans-serif; }
+      .serif { font-family: Georgia, "Times New Roman", serif; }
+      .title { font-weight: 700; fill: #172331; }
+      .muted { fill: #647386; }
+      .navText { fill: rgba(255,255,255,0.76); font-weight: 700; }
+      .smallCaps { font-size: 14px; letter-spacing: 2px; font-weight: 700; text-transform: uppercase; }
+    </style>
+  </defs>
+
+  <rect width="2400" height="1600" fill="url(#pageBg)"/>
+  <rect width="2400" height="1600" fill="url(#schoolPattern)"/>
+
+  <g id="Cover / Title">
+    <text x="92" y="94" class="font smallCaps" fill="#2F6FA3">Kelas Catur Kecamatan Bungah</text>
+    <text x="92" y="142" class="serif title" font-size="42">Figma Ready UI Preview</text>
+    <text x="92" y="178" class="font muted" font-size="20">Import SVG ini ke Figma. Semua frame memakai palet biru-putih resmi sekolah.</text>
+  </g>
+
+  <g id="Frame / Dashboard Desktop" transform="translate(92 240)">
+    <rect width="1340" height="840" rx="34" fill="white" opacity="0.94" filter="url(#cardShadow)"/>
+    <rect x="28" y="28" width="244" height="784" rx="26" fill="url(#navBg)"/>
+    <g transform="translate(60 62)">
+      <rect width="76" height="76" rx="22" fill="white" opacity="0.15"/>
+      <rect x="18" y="18" width="40" height="40" rx="8" fill="white"/>
+      <path d="M26 36L38 28L50 36L38 44L26 36Z" fill="#123A63"/>
+      <path d="M28 44L38 50L48 44V54L38 60L28 54V44Z" fill="#2F6FA3"/>
+      <text x="96" y="31" class="serif" font-size="24" font-weight="700" fill="white">KELAS CATUR</text>
+      <text x="96" y="58" class="font" font-size="14" fill="white" opacity="0.74">Kecamatan Bungah</text>
+    </g>
+    <g class="font" font-size="17" transform="translate(58 184)">
+      <rect x="0" y="0" width="184" height="48" rx="16" fill="white" opacity="0.17"/>
+      <circle cx="24" cy="24" r="5" fill="white"/>
+      <text x="44" y="30" class="navText" fill="white">Dashboard</text>
+      <circle cx="24" cy="88" r="5" fill="white" opacity="0.42"/>
+      <text x="44" y="94" class="navText" opacity="0.76">Daftar</text>
+      <circle cx="24" cy="152" r="5" fill="white" opacity="0.42"/>
+      <text x="44" y="158" class="navText" opacity="0.76">Data Siswa</text>
+      <circle cx="24" cy="216" r="5" fill="white" opacity="0.42"/>
+      <text x="44" y="222" class="navText" opacity="0.76">Jadwal Kelas</text>
+      <circle cx="24" cy="280" r="5" fill="white" opacity="0.42"/>
+      <text x="44" y="286" class="navText" opacity="0.76">Riwayat Kelas</text>
+      <circle cx="24" cy="344" r="5" fill="white" opacity="0.42"/>
+      <text x="44" y="350" class="navText" opacity="0.76">Perkembangan</text>
+      <circle cx="24" cy="408" r="5" fill="white" opacity="0.42"/>
+      <text x="44" y="414" class="navText" opacity="0.76">Cetak Rapot</text>
+    </g>
+    <g transform="translate(58 706)">
+      <rect width="184" height="74" rx="18" fill="white" opacity="0.13"/>
+      <text x="18" y="28" class="font smallCaps" fill="#E2EEF7">Masuk sebagai</text>
+      <text x="18" y="53" class="font" font-size="16" font-weight="700" fill="white">Admin KC</text>
+    </g>
+
+    <g id="Topbar" transform="translate(312 48)">
+      <rect x="0" y="0" width="48" height="48" rx="15" fill="white" stroke="#D8E6F2"/>
+      <rect x="15" y="16" width="18" height="2" rx="1" fill="#123A63"/>
+      <rect x="15" y="23" width="18" height="2" rx="1" fill="#123A63"/>
+      <rect x="15" y="30" width="18" height="2" rx="1" fill="#123A63"/>
+      <text x="70" y="18" class="font smallCaps" fill="#2F6FA3">Kelas Catur</text>
+      <text x="70" y="56" class="serif title" font-size="38">Dashboard</text>
+      <rect x="826" y="0" width="150" height="64" rx="18" fill="white" stroke="#D8E6F2"/>
+      <text x="846" y="24" class="font smallCaps muted">Hari ini</text>
+      <text x="846" y="48" class="font" font-size="15" font-weight="700" fill="#123A63">24 Mei 2026</text>
+    </g>
+
+    <g id="Hero Card" transform="translate(312 140)">
+      <rect width="980" height="174" rx="26" fill="url(#heroBg)"/>
+      <rect width="980" height="174" rx="26" fill="url(#schoolPattern)" opacity="0.35"/>
+      <circle cx="892" cy="46" r="70" fill="#2F9879" opacity="0.16"/>
+      <circle cx="800" cy="132" r="46" fill="#FFFFFF" opacity="0.10"/>
+      <text x="42" y="56" class="font" font-size="18" fill="white" opacity="0.78">Minggu administrasi aktif</text>
+      <text x="42" y="105" class="serif" font-size="36" font-weight="700" fill="white">Kelola kelas dengan rapi</text>
+      <text x="42" y="137" class="font" font-size="18" fill="white" opacity="0.78">Pantau siswa, jadwal, nilai, dan rapot dalam satu dashboard.</text>
+    </g>
+
+    <g id="Metrics" transform="translate(312 350)" class="font">
+      <g>
+        <rect width="220" height="132" rx="22" fill="white" stroke="#D8E6F2" filter="url(#softShadow)"/>
+        <text x="24" y="38" class="smallCaps muted">Siswa Aktif</text>
+        <text x="24" y="86" font-size="36" font-weight="800" fill="#123A63">30</text>
+      </g>
+      <g transform="translate(246 0)">
+        <rect width="220" height="132" rx="22" fill="white" stroke="#D8E6F2" filter="url(#softShadow)"/>
+        <text x="24" y="38" class="smallCaps muted">Pertemuan</text>
+        <text x="24" y="86" font-size="36" font-weight="800" fill="#123A63">12</text>
+      </g>
+      <g transform="translate(492 0)">
+        <rect width="220" height="132" rx="22" fill="white" stroke="#D8E6F2" filter="url(#softShadow)"/>
+        <text x="24" y="38" class="smallCaps muted">Rata-rata</text>
+        <text x="24" y="86" font-size="36" font-weight="800" fill="#123A63">82,5</text>
+      </g>
+      <g transform="translate(738 0)">
+        <rect width="242" height="132" rx="22" fill="white" stroke="#D8E6F2" filter="url(#softShadow)"/>
+        <text x="24" y="38" class="smallCaps muted">Rapot Siap</text>
+        <text x="24" y="86" font-size="36" font-weight="800" fill="#123A63">30</text>
+      </g>
+    </g>
+
+    <g id="Panels" transform="translate(312 520)" class="font">
+      <g>
+        <rect width="572" height="260" rx="26" fill="white" stroke="#D8E6F2" filter="url(#softShadow)"/>
+        <text x="28" y="48" class="serif title" font-size="28">Pertemuan Terbaru</text>
+        <rect x="386" y="25" width="150" height="42" rx="21" fill="#E8F3FB" stroke="#D8E6F2"/>
+        <text x="418" y="52" font-size="15" fill="#123A63">Kelola Jadwal</text>
+        <g transform="translate(28 86)">
+          <rect width="516" height="64" rx="18" fill="#F7FAFD" stroke="#D8E6F2"/>
+          <text x="18" y="25" font-size="16" font-weight="700" fill="#172331">Pembukaan</text>
+          <text x="18" y="48" font-size="14" fill="#647386">24 Mei 2026</text>
+          <rect x="406" y="16" width="82" height="32" rx="16" fill="#E8F3FB"/>
+          <text x="426" y="37" font-size="14" font-weight="700" fill="#123A63">2 siswa</text>
+        </g>
+        <g transform="translate(28 162)">
+          <rect width="516" height="64" rx="18" fill="#F7FAFD" stroke="#D8E6F2"/>
+          <text x="18" y="25" font-size="16" font-weight="700" fill="#172331">Serangan Kuda</text>
+          <text x="18" y="48" font-size="14" fill="#647386">23 Mei 2026</text>
+          <rect x="406" y="16" width="82" height="32" rx="16" fill="#E8F3FB"/>
+          <text x="426" y="37" font-size="14" font-weight="700" fill="#123A63">4 siswa</text>
+        </g>
+      </g>
+      <g transform="translate(604 0)">
+        <rect width="376" height="260" rx="26" fill="white" stroke="#D8E6F2" filter="url(#softShadow)"/>
+        <text x="28" y="48" class="serif title" font-size="28">Indeks Bulanan</text>
+        <g transform="translate(28 84)">
+          <rect width="320" height="48" rx="16" fill="#F7FAFD"/>
+          <text x="18" y="30" font-size="16" font-weight="700" fill="#172331">Adit</text>
+          <text x="248" y="30" font-size="16" font-weight="700" fill="#123A63">75,0</text>
+        </g>
+        <g transform="translate(28 142)">
+          <rect width="320" height="48" rx="16" fill="#F7FAFD"/>
+          <text x="18" y="30" font-size="16" font-weight="700" fill="#172331">Aan</text>
+          <text x="248" y="30" font-size="16" font-weight="700" fill="#123A63">69,0</text>
+        </g>
+        <g transform="translate(28 200)">
+          <rect width="320" height="34" rx="17" fill="url(#greenAccent)" opacity="0.12"/>
+          <text x="18" y="23" font-size="14" font-weight="700" fill="#236C5B">Lihat rapot lengkap</text>
+        </g>
+      </g>
+    </g>
+  </g>
+
+  <g id="Frame / Mobile Menu Open" transform="translate(1520 240)">
+    <rect width="390" height="844" rx="38" fill="#F5F9FC" filter="url(#cardShadow)"/>
+    <rect x="18" y="18" width="354" height="808" rx="30" fill="white"/>
+    <rect x="18" y="18" width="354" height="808" rx="30" fill="url(#schoolPattern)" opacity="0.28"/>
+    <rect x="38" y="38" width="294" height="768" rx="28" fill="url(#navBg)"/>
+    <g transform="translate(66 70)">
+      <rect width="64" height="64" rx="18" fill="white" opacity="0.16"/>
+      <rect x="17" y="18" width="30" height="30" rx="7" fill="white"/>
+      <text x="0" y="110" class="serif" font-size="28" font-weight="700" fill="white">KELAS CATUR</text>
+      <text x="0" y="138" class="font" font-size="15" fill="white" opacity="0.72">Kecamatan Bungah</text>
+    </g>
+    <g class="font" font-size="17" transform="translate(66 250)">
+      <rect width="238" height="50" rx="16" fill="white" opacity="0.17"/>
+      <text x="22" y="31" fill="white" font-weight="700">Dashboard</text>
+      <text x="22" y="96" fill="white" opacity="0.76" font-weight="700">Daftar</text>
+      <text x="22" y="160" fill="white" opacity="0.76" font-weight="700">Data Siswa</text>
+      <text x="22" y="224" fill="white" opacity="0.76" font-weight="700">Jadwal Kelas</text>
+      <text x="22" y="288" fill="white" opacity="0.76" font-weight="700">Riwayat Kelas</text>
+      <text x="22" y="352" fill="white" opacity="0.76" font-weight="700">Cetak Rapot</text>
+    </g>
+    <g transform="translate(66 704)">
+      <rect width="238" height="70" rx="18" fill="white" opacity="0.14"/>
+      <text x="18" y="30" class="font" font-size="13" font-weight="700" fill="#E2EEF7">ADMIN KC</text>
+      <text x="18" y="52" class="font" font-size="14" fill="white" opacity="0.8">adminkc@gmail.com</text>
+    </g>
+  </g>
+
+  <g id="Frame / Login Mobile" transform="translate(1960 240)">
+    <rect width="390" height="844" rx="38" fill="#F5F9FC" filter="url(#cardShadow)"/>
+    <rect x="18" y="18" width="354" height="808" rx="30" fill="white"/>
+    <rect x="18" y="18" width="354" height="808" rx="30" fill="url(#schoolPattern)" opacity="0.22"/>
+    <g transform="translate(50 74)">
+      <rect width="74" height="74" rx="22" fill="#E8F3FB" stroke="#D8E6F2"/>
+      <rect x="20" y="20" width="34" height="34" rx="8" fill="#123A63"/>
+      <text x="0" y="122" class="serif title" font-size="28">KELAS CATUR</text>
+      <text x="0" y="150" class="font muted" font-size="15">Kecamatan Bungah</text>
+    </g>
+    <g transform="translate(50 266)">
+      <text x="0" y="0" class="serif title" font-size="32">Masuk dengan Email</text>
+      <text x="0" y="38" class="font muted" font-size="16">Gunakan email admin dan kata sandi.</text>
+    </g>
+    <g class="font" transform="translate(50 370)">
+      <text x="0" y="0" font-size="15" font-weight="700" fill="#172331">Email admin</text>
+      <rect x="0" y="18" width="290" height="56" rx="16" fill="white" stroke="#D8E6F2"/>
+      <text x="18" y="54" font-size="15" fill="#647386">adminkc@gmail.com</text>
+      <text x="0" y="116" font-size="15" font-weight="700" fill="#172331">Kata sandi</text>
+      <rect x="0" y="134" width="290" height="56" rx="16" fill="white" stroke="#D8E6F2"/>
+      <text x="18" y="170" font-size="15" fill="#647386">Masukkan kata sandi</text>
+      <rect x="0" y="236" width="290" height="54" rx="27" fill="url(#heroBg)"/>
+      <text x="122" y="270" font-size="16" font-weight="700" fill="white">Masuk</text>
+    </g>
+  </g>
+
+  <g id="Design Notes" transform="translate(92 1170)">
+    <rect width="2258" height="260" rx="30" fill="white" opacity="0.86" filter="url(#softShadow)"/>
+    <text x="34" y="56" class="serif title" font-size="30">Catatan Import Figma</text>
+    <text x="34" y="100" class="font muted" font-size="18">1. Buka Figma, lalu drag file SVG ini ke canvas atau pilih File - Import.</text>
+    <text x="34" y="136" class="font muted" font-size="18">2. Setelah masuk, klik kanan frame lalu pilih Ungroup jika ingin edit detail per elemen.</text>
+    <text x="34" y="172" class="font muted" font-size="18">3. Palet resmi: Navy #123A63, Biru #2F6FA3, Hijau #2F9879, Background #EEF5FB, Teks #172331.</text>
+    <text x="34" y="208" class="font muted" font-size="18">4. File ini hanya desain visual. Sistem Laravel, route, controller, dan database tidak ikut berubah.</text>
+  </g>
+</svg>
