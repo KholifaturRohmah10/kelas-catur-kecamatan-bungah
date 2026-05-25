@@ -3,6 +3,23 @@
 use Illuminate\Support\Str;
 use Pdo\Mysql;
 
+$mysqlSslCa = static function (): ?string {
+    $path = env('MYSQL_ATTR_SSL_CA');
+
+    if (! is_string($path) || trim($path) === '') {
+        return null;
+    }
+
+    $path = trim($path, "\"'");
+    $isWindowsAbsolutePath = (bool) preg_match('/^[A-Za-z]:[\\\\\\/]/', $path);
+
+    if (! str_starts_with($path, '/') && ! $isWindowsAbsolutePath) {
+        return base_path($path);
+    }
+
+    return $path;
+};
+
 return [
 
     /*
@@ -61,7 +78,7 @@ return [
             'engine' => null,
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 PDO::ATTR_TIMEOUT => max(1, (int) env('DB_CONNECT_TIMEOUT', 5)),
-                (PHP_VERSION_ID >= 80500 ? Mysql::ATTR_SSL_CA : PDO::MYSQL_ATTR_SSL_CA) => env('MYSQL_ATTR_SSL_CA'),
+                (PHP_VERSION_ID >= 80500 ? Mysql::ATTR_SSL_CA : PDO::MYSQL_ATTR_SSL_CA) => $mysqlSslCa(),
             ]) : [],
         ],
 
@@ -82,7 +99,7 @@ return [
             'engine' => null,
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 PDO::ATTR_TIMEOUT => max(1, (int) env('DB_CONNECT_TIMEOUT', 5)),
-                (PHP_VERSION_ID >= 80500 ? Mysql::ATTR_SSL_CA : PDO::MYSQL_ATTR_SSL_CA) => env('MYSQL_ATTR_SSL_CA'),
+                (PHP_VERSION_ID >= 80500 ? Mysql::ATTR_SSL_CA : PDO::MYSQL_ATTR_SSL_CA) => $mysqlSslCa(),
             ]) : [],
         ],
 
