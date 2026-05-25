@@ -28,6 +28,10 @@
         @php($topbarUserInitial = $currentUser ? (string) \Illuminate\Support\Str::of($currentUser->name)->trim()->substr(0, 1)->upper() : '')
 
         <aside class="sidebar" id="app-sidebar">
+            <button class="sidebar-close" type="button" aria-label="Tutup menu" data-sidebar-close>
+                <span class="sidebar-close-icon" aria-hidden="true"></span>
+            </button>
+
             <div class="brand">
                 <div class="brand-mark">
                     <img src="{{ $brandImage }}" alt="Lambang Kabupaten Gresik">
@@ -269,6 +273,7 @@
             const sidebar = document.getElementById('app-sidebar');
             const toggle = document.querySelector('[data-sidebar-toggle]');
             const backdrop = document.querySelector('[data-sidebar-backdrop]');
+            const closeButtons = document.querySelectorAll('[data-sidebar-close]');
             const desktopBreakpoint = 1180;
 
             if (!body || !sidebar || !toggle || !backdrop) {
@@ -335,6 +340,10 @@
             });
 
             backdrop.addEventListener('click', closeMobileSidebar);
+
+            closeButtons.forEach(function (button) {
+                button.addEventListener('click', closeMobileSidebar);
+            });
 
             sidebar.querySelectorAll('.nav-link').forEach(function (link) {
                 link.addEventListener('click', function () {

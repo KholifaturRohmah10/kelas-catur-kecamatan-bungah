@@ -20,26 +20,6 @@
     @yield('head')
 </head>
 <body class="auth-body">
-    <button class="theme-toggle auth-theme-toggle" type="button" data-theme-toggle aria-label="Ubah mode tampilan">
-        <span class="theme-toggle-icon" aria-hidden="true">
-            <svg class="theme-toggle-glyph theme-toggle-glyph-moon" viewBox="0 0 24 24">
-                <path d="M20.2 14.4A8.6 8.6 0 1 1 9.6 3.8a7.2 7.2 0 0 0 10.6 10.6Z"/>
-            </svg>
-            <svg class="theme-toggle-glyph theme-toggle-glyph-sun" viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="4"/>
-                <path d="M12 2.5v2.2"/>
-                <path d="M12 19.3v2.2"/>
-                <path d="M21.5 12h-2.2"/>
-                <path d="M4.7 12H2.5"/>
-                <path d="m18.7 5.3-1.6 1.6"/>
-                <path d="m6.9 17.1-1.6 1.6"/>
-                <path d="m18.7 18.7-1.6-1.6"/>
-                <path d="m6.9 6.9-1.6-1.6"/>
-            </svg>
-        </span>
-        <span class="sr-only" data-theme-label>Mode</span>
-    </button>
-
     @include('partials.flash')
 
     <div class="auth-stage">
