@@ -4430,7 +4430,10 @@ body.sidebar-collapsed .sidebar {
     }
 
     body {
-        background: linear-gradient(180deg, rgba(247, 251, 255, 0.98), rgba(229, 239, 248, 0.96));
+        background:
+            radial-gradient(circle at 14% 8%, rgba(47, 111, 163, 0.12), transparent 28%),
+            radial-gradient(circle at 92% 18%, rgba(76, 195, 161, 0.1), transparent 24%),
+            linear-gradient(180deg, #e8f0f7 0%, #d9e6f0 52%, #d3e0eb 100%);
     }
 
     :root[data-theme="dark"] body {
@@ -4438,7 +4441,7 @@ body.sidebar-collapsed .sidebar {
     }
 
     body::before {
-        opacity: 0.16;
+        opacity: 0.22;
         background-size: 44px 44px;
         background-position: 0 0, 22px 22px;
     }
@@ -4532,9 +4535,9 @@ body.sidebar-collapsed .sidebar {
         min-height: 68px;
         padding: 10px 12px;
         border-radius: 18px;
-        background: rgba(255, 255, 255, 0.82);
-        border-color: rgba(47, 111, 163, 0.12);
-        box-shadow: 0 14px 40px rgba(17, 47, 78, 0.08);
+        background: rgba(242, 247, 251, 0.88);
+        border-color: rgba(47, 111, 163, 0.16);
+        box-shadow: 0 14px 40px rgba(17, 47, 78, 0.11);
     }
 
     :root[data-theme="dark"] .topbar-shell {
@@ -4576,9 +4579,9 @@ body.sidebar-collapsed .sidebar {
     .dashboard-ranking-item,
     .report-score-card {
         border-radius: 16px;
-        background: rgba(255, 255, 255, 0.9);
-        border-color: rgba(47, 111, 163, 0.13);
-        box-shadow: 0 16px 42px rgba(17, 47, 78, 0.08);
+        background: rgba(244, 248, 251, 0.9);
+        border-color: rgba(47, 111, 163, 0.16);
+        box-shadow: 0 16px 42px rgba(17, 47, 78, 0.1);
     }
 
     :root[data-theme="dark"] .hero-panel,
@@ -4704,8 +4707,8 @@ body.sidebar-collapsed .sidebar {
 
     .btn-secondary,
     .btn-light {
-        background: rgba(47, 111, 163, 0.08);
-        border-color: rgba(47, 111, 163, 0.12);
+        background: rgba(47, 111, 163, 0.1);
+        border-color: rgba(47, 111, 163, 0.18);
     }
 
     :root[data-theme="dark"] .btn-secondary,
@@ -4716,7 +4719,7 @@ body.sidebar-collapsed .sidebar {
     .empty-state {
         border-radius: 14px;
         border-style: solid;
-        background: rgba(47, 111, 163, 0.04);
+        background: rgba(47, 111, 163, 0.06);
     }
 
     :root[data-theme="dark"] .empty-state {
