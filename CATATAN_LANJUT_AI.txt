@@ -1,0 +1,123 @@
+CATATAN LANJUT UNTUK AI / CODEX
+Tanggal catatan: 2026-05-26
+Project lokal: c:\xampp\htdocs\kelas_catur
+Repository GitHub: KholifaturRohmah10/kelas-catur-kecamatan-bungah
+Branch utama: main
+
+PROMPT PEMBUKA UNTUK CHAT BARU
+Baca file CATATAN_LANJUT_AI.txt ini dulu sebelum mengubah project. Saya sedang menyiapkan dan memoles aplikasi Laravel "Kelas Catur Kecamatan Bungah" untuk deploy di Vercel dengan database TiDB/MySQL. Tolong lanjutkan pekerjaan dengan konsisten mengikuti catatan ini, jangan mulai dari nol, jangan bocorkan isi .env, dan setelah mengubah kode jalankan validasi lalu commit dan push ke main jika aman.
+
+GAYA KERJA YANG DIINGINKAN USER
+- User biasa memanggil "bang" dan ingin jawaban bahasa Indonesia yang santai, jelas, dan langsung eksekusi.
+- User ingin perubahan langsung dibuat, bukan hanya saran.
+- User ingin desain terlihat profesional, responsif di desktop dan phone, tetapi tetap konsisten dengan tema aplikasi.
+- Jangan membuat tampilan seperti landing page kosong. Aplikasi harus terasa seperti dashboard/web app yang siap dipakai.
+- Kalau ada perubahan frontend, perhatikan screenshot dari user dan perbaiki bagian yang benar-benar dimaksud.
+- Setelah selesai, beri ringkasan singkat: apa yang diubah, validasi apa yang sukses, commit hash, dan instruksi redeploy/hard refresh.
+
+RAHASIA DAN .ENV
+- File .env lokal berisi data sensitif. Jangan pernah menampilkan nilai asli dari .env di chat.
+- .env sudah disiapkan untuk production/TiDB, tetapi tetap gitignored.
+- AUTH_LOGIN_BYPASS di production harus false.
+- Session dan cache diarahkan ke database untuk production.
+- MYSQL_ATTR_SSL_CA memakai path relatif: storage/certs/tidb-ca.pem.
+- Jika user minta env untuk Vercel, berikan template/nama key saja tanpa membocorkan nilai rahasia.
+
+STACK PROJECT
+- Laravel 12, Blade, PHP, MySQL/TiDB.
+- Vite untuk asset frontend.
+- CSS utama custom berada di public/css/kelas-catur.css.
+- Layout aplikasi utama: resources/views/layouts/app.blade.php.
+- Layout auth/login: resources/views/layouts/auth.blade.php dan resources/views/auth/login.blade.php.
+- Dashboard: resources/views/dashboard/index.blade.php.
+- Deploy target: Vercel dengan vercel-php.
+- Database target: TiDB/MySQL.
+
+FILE PENTING DEPLOY
+- api/index.php: entrypoint Laravel untuk Vercel PHP.
+- vercel.json: konfigurasi build/routing Vercel.
+- .vercelignore: mengecualikan file yang tidak perlu.
+- storage/certs/tidb-ca.pem: CA cert TiDB.
+- config/database.php: sudah mendukung MYSQL_ATTR_SSL_CA relatif.
+- .env.example: template env production.
+- PANDUAN_DEPLOY_VERCEL.md: panduan deploy dan migrasi.
+- package-lock.json: sudah ada.
+
+RIWAYAT PERBAIKAN DEPLOY
+- Awalnya Vercel error "No Output Directory named dist" karena konfigurasi masih seperti Vite static app.
+- Sudah diperbaiki agar Vercel memakai Laravel/PHP builder, bukan mencari dist.
+- Lalu Vercel error "composer: command not found" pada install command custom.
+- Sudah diperbaiki agar Vercel PHP yang menangani Composer dependencies.
+- Asset path juga sudah diperbaiki agar relative path cocok di Vercel.
+
+RIWAYAT DESAIN DAN UI
+- Dashboard awal terlihat seperti preview kecil/framed, lalu dipoles menjadi full web app.
+- Header atas sudah dibuat tidak ikut turun secara janggal saat scroll.
+- Sidebar desktop bisa collapsed menjadi icon rail.
+- Sidebar mobile memakai drawer dengan backdrop dan tombol X.
+- Light mode sudah dilembutkan, tidak terlalu putih menyilaukan.
+- Login sudah dipoles agar tombol light/dark menyatu di panel login, bukan berdiri sendiri di pojok.
+- Mobile login terakhir diperbaiki agar bagian showcase/tambahan juga tampil di phone, bukan hanya form login.
+- Drawer mobile terakhir diperbaiki agar bisa discroll ke bawah, spacing atas dikurangi, dan lebih responsif.
+
+KOMIT TERBARU YANG SUDAH DIPUSH
+- 38ff75f Improve mobile login and drawer responsiveness
+- cbad4ab Refine collapsed sidebar spacing
+- 17f68de Polish login and sidebar interactions
+- 90bcb36 Soften light theme colors
+- 1ecd3ff Adjust header and collapsed sidebar
+- 4828703 Polish app dashboard layout
+- c3c7173 Use relative asset paths for Vercel
+- ac8990b Let Vercel PHP install Composer deps
+
+STATUS GIT SAAT CATATAN DIBUAT
+- main sudah sinkron dengan origin/main.
+- Working tree bersih.
+
+VALIDASI YANG BIASA DIJALANKAN SETELAH EDIT
+1. php artisan view:cache
+2. php artisan test
+3. npm.cmd run build
+4. git diff --check
+5. git status -sb
+
+CATATAN TEST
+- php artisan test lulus 19 tests / 61 assertions.
+- Saat test, ada log testing.ERROR tentang koneksi MySQL refused. Itu bagian dari test yang mensimulasikan database unavailable dan tetap PASS. Jangan salah menganggap itu kegagalan jika hasil akhirnya "Tests: 19 passed".
+
+PREFERENSI FRONTEND
+- Pertahankan tema biru tua, biru lembut, hijau aksen.
+- Light mode jangan terlalu putih terang. Pakai blue-gray lembut.
+- Dark mode tetap deep navy.
+- Jangan pakai animasi berat. Buka/tutup menu cukup smooth ringan.
+- Jangan bikin terlalu banyak spacing kosong di mobile.
+- Semua device harus responsif.
+- Sidebar mobile harus bisa ditutup via X, klik luar/backdrop, dan Escape.
+- Sidebar mobile harus bisa scroll sampai menu paling bawah.
+- Desktop collapsed sidebar harus proporsional dan tidak membuat konten terlalu mepet.
+
+HAL YANG PERLU DIPERHATIKAN JIKA LANJUT EDIT CSS
+- public/css/kelas-catur.css punya beberapa blok override historis. Aturan paling bawah biasanya dipakai untuk memastikan override menang.
+- Jika menambah polish baru, lebih aman tambahkan blok kecil di bagian paling akhir CSS, lalu validasi.
+- Jangan refactor besar CSS kecuali diminta, karena sudah banyak override untuk mengejar deploy cepat.
+- Pastikan text tidak overlap dan tombol tidak keluar container di mobile.
+
+HAL YANG PERLU DIPERHATIKAN JIKA LANJUT DEPLOY
+- Setelah push ke main, Vercel biasanya auto redeploy.
+- Jika tampilan belum berubah, minta user hard refresh Ctrl + F5 atau clear cache browser.
+- Untuk migrasi production, gunakan command sesuai panduan: php artisan migrate --force, dijalankan di environment yang benar.
+- Jangan menjalankan perintah destructive seperti reset hard.
+
+FORMAT JAWABAN FINAL YANG DISUKAI
+Contoh:
+"Beres bang, sudah saya fix dan push.
+Yang berubah: ...
+Validasi aman: php artisan view:cache, php artisan test 19 passed, npm run build.
+Commit terbaru: <hash>. Deploy ulang Vercel lalu Ctrl + F5."
+
+CATATAN KHUSUS UNTUK AI LANJUTAN
+- Jangan membaca atau menampilkan isi .env kecuali hanya struktur/nama key yang diperlukan.
+- Jangan mengulang analisa dari nol jika user hanya minta perbaikan spesifik.
+- Gunakan rg untuk cari file/teks.
+- Gunakan apply_patch untuk edit manual.
+- Setelah edit yang perlu deploy, commit dan push ke origin/main jika validasi aman.
