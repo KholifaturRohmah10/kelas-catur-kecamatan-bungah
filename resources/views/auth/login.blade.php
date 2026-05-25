@@ -3,7 +3,7 @@
 @section('title', 'Login')
 
 @section('content')
-    @php($brandImage = asset('images/logo-gresik.png').'?v='.filemtime(public_path('images/logo-gresik.png')))
+    @php($brandImage = '/images/logo-gresik.png?v='.(file_exists(public_path('images/logo-gresik.png')) ? filemtime(public_path('images/logo-gresik.png')) : '1'))
 
     <main class="auth-shell">
         <section class="auth-showcase" aria-hidden="true">

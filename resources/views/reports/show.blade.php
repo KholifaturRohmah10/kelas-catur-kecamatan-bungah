@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 @php
-    $themeCssHref = asset('css/kelas-catur.css').'?v='.(file_exists(public_path('css/kelas-catur.css')) ? filemtime(public_path('css/kelas-catur.css')) : '1');
-    $brandImageHref = asset('images/logo-gresik.png').'?v='.(file_exists(public_path('images/logo-gresik.png')) ? filemtime(public_path('images/logo-gresik.png')) : '1');
+    $themeCssHref = '/css/kelas-catur.css?v='.(file_exists(public_path('css/kelas-catur.css')) ? filemtime(public_path('css/kelas-catur.css')) : '1');
+    $brandImageHref = '/images/logo-gresik.png?v='.(file_exists(public_path('images/logo-gresik.png')) ? filemtime(public_path('images/logo-gresik.png')) : '1');
 @endphp
 <html lang="id">
 <head>

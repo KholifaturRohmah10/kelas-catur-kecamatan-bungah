@@ -4,8 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title', 'Dashboard') | {{ config('app.name') }}</title>
-    @php($themeCss = asset('css/kelas-catur.css').'?v='.filemtime(public_path('css/kelas-catur.css')))
-    @php($brandImage = asset('images/logo-gresik.png').'?v='.filemtime(public_path('images/logo-gresik.png')))
+    @php($themeCss = '/css/kelas-catur.css?v='.(file_exists(public_path('css/kelas-catur.css')) ? filemtime(public_path('css/kelas-catur.css')) : '1'))
+    @php($brandImage = '/images/logo-gresik.png?v='.(file_exists(public_path('images/logo-gresik.png')) ? filemtime(public_path('images/logo-gresik.png')) : '1'))
     <script>
         (function () {
             try {
