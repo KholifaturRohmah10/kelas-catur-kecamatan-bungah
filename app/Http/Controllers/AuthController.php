@@ -2,20 +2,71 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+use App\Support\DatabaseConnectionState;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use Throwable;
 
 class AuthController extends Controller
 {
-    public function create(): View
+    public function create(Request $request): View|RedirectResponse
     {
+        try {
+            if (Auth::check()) {
+                return redirect()->route('dashboard');
+            }
+        } catch (Throwable $exception) {
+            if (DatabaseConnectionState::isUnavailable($exception)) {
+                report($exception);
+                $this->resetLoginSession($request);
+
+                return view('auth.login')->withErrors([
+                    'email' => DatabaseConnectionState::loginHelpMessage(),
+                ]);
+            }
+
+            throw $exception;
+        }
+
         return view('auth.login');
     }
 
     public function store(Request $request): RedirectResponse
     {
+        if ($this->isLoginBypassEnabled()) {
+            try {
+                $user = User::query()->firstOrCreate(
+                    ['email' => (string) config('auth.login_bypass.email')],
+                    [
+                        'name' => (string) config('auth.login_bypass.name'),
+                        'password' => bin2hex(random_bytes(16)),
+                    ],
+                );
+            } catch (Throwable $exception) {
+                if (DatabaseConnectionState::isUnavailable($exception)) {
+                    report($exception);
+                    $this->resetLoginSession($request);
+
+                    return back()
+                        ->withErrors([
+                            'email' => DatabaseConnectionState::loginHelpMessage(),
+                        ])
+                        ->onlyInput('email');
+                }
+
+                throw $exception;
+            }
+
+            Auth::login($user, true);
+            $request->session()->regenerate();
+
+            return redirect()->intended(route('dashboard'))
+                ->with('success', 'Login sementara aktif. Anda langsung masuk ke dashboard.');
+        }
+
         $credentials = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required', 'string'],
@@ -25,7 +76,24 @@ class AuthController extends Controller
             'password.required' => 'Kata sandi wajib diisi.',
         ]);
 
-        if (! Auth::attempt($credentials, $request->boolean('remember'))) {
+        try {
+            $authenticated = Auth::attempt($credentials, $request->boolean('remember'));
+        } catch (Throwable $exception) {
+            if (DatabaseConnectionState::isUnavailable($exception)) {
+                report($exception);
+                $this->resetLoginSession($request);
+
+                return back()
+                    ->withErrors([
+                        'email' => DatabaseConnectionState::loginHelpMessage(),
+                    ])
+                    ->onlyInput('email');
+            }
+
+            throw $exception;
+        }
+
+        if (! $authenticated) {
             return back()
                 ->withErrors([
                     'email' => 'Email atau kata sandi tidak sesuai.',
@@ -48,5 +116,16 @@ class AuthController extends Controller
 
         return redirect()->route('login')
             ->with('success', 'Anda telah keluar dari aplikasi.');
+    }
+
+    private function resetLoginSession(Request $request): void
+    {
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+    }
+
+    private function isLoginBypassEnabled(): bool
+    {
+        return (bool) config('auth.login_bypass.enabled');
     }
 }

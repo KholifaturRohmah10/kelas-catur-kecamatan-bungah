@@ -114,4 +114,10 @@ return [
 
     'password_timeout' => env('AUTH_PASSWORD_TIMEOUT', 10800),
 
+    'login_bypass' => [
+        'enabled' => env('AUTH_LOGIN_BYPASS', false),
+        'name' => env('AUTH_LOGIN_BYPASS_NAME', 'ADMIN KELAS CATUR'),
+        'email' => env('AUTH_LOGIN_BYPASS_EMAIL', 'adminkc@gmail.com'),
+    ],
+
 ];

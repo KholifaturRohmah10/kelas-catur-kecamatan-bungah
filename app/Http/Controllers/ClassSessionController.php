@@ -69,7 +69,7 @@ class ClassSessionController extends Controller
     public function update(Request $request, ClassSession $classSession): RedirectResponse
     {
         $validated = $this->validatedSession($request);
-        $this->validateSelectedScores($validated);
+        $this->validateSelectedScores($validated, $classSession);
 
         DB::transaction(function () use ($validated, $classSession): void {
             $classSession->update([
@@ -100,6 +100,7 @@ class ClassSessionController extends Controller
     private function students()
     {
         return Student::query()
+            ->orderByRaw("case when status = 'Aktif' then 0 else 1 end")
             ->orderBy('name')
             ->get();
     }
@@ -132,14 +133,46 @@ class ClassSessionController extends Controller
         ]);
     }
 
-    private function validateSelectedScores(array $validated): void
+    private function validateSelectedScores(array $validated, ?ClassSession $classSession = null): void
     {
+        $selectedStudentIds = collect($validated['student_ids'])
+            ->map(fn ($studentId) => (int) $studentId)
+            ->values();
+        $selectedStudents = Student::query()
+            ->whereIn('id', $selectedStudentIds)
+            ->get()
+            ->keyBy('id');
+        $existingScores = $classSession?->scores()
+            ->get()
+            ->keyBy('student_id')
+            ?? collect();
+
         foreach ($validated['student_ids'] as $studentId) {
             $score = data_get($validated, "scores.{$studentId}");
 
             if ($score === null || $score === '') {
                 throw ValidationException::withMessages([
                     "scores.{$studentId}" => 'Nilai wajib diisi untuk setiap siswa yang dipilih.',
+                ]);
+            }
+
+            $student = $selectedStudents->get((int) $studentId);
+
+            if (! $student || $student->status === 'Aktif') {
+                continue;
+            }
+
+            $existingScore = $existingScores->get((int) $studentId);
+
+            if (! $existingScore) {
+                throw ValidationException::withMessages([
+                    'student_ids' => 'Siswa nonaktif tidak bisa dipilih untuk penilaian.',
+                ]);
+            }
+
+            if ((int) $existingScore->score !== (int) $score) {
+                throw ValidationException::withMessages([
+                    "scores.{$studentId}" => 'Nilai siswa nonaktif yang sudah tersimpan tidak bisa diubah.',
                 ]);
             }
         }

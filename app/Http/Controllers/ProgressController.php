@@ -11,6 +11,9 @@ class ProgressController extends Controller
 {
     public function index(): View
     {
+        $chartWindowStart = now()->subWeeks(2)->startOfDay();
+        $chartWindowLabel = '2 minggu terakhir';
+
         $sessions = ClassSession::query()
             ->withCount([
                 'scores as passed_students_count' => fn ($query) => $query->where('score', '>', 60),
@@ -20,7 +23,7 @@ class ProgressController extends Controller
             ->get();
 
         $chartSessions = $sessions
-            ->filter(fn (ClassSession $session): bool => $session->session_date !== null && $session->session_date->gte(now()->subMonth()->startOfDay()))
+            ->filter(fn (ClassSession $session): bool => $session->session_date !== null && $session->session_date->gte($chartWindowStart))
             ->values();
 
         $studentProgress = Student::query()
@@ -45,6 +48,6 @@ class ProgressController extends Controller
 
         $peakPassed = max(1, (int) $chartSessions->max('passed_students_count'));
 
-        return view('progress.index', compact('sessions', 'chartSessions', 'studentProgress', 'overview', 'peakPassed'));
+        return view('progress.index', compact('sessions', 'chartSessions', 'studentProgress', 'overview', 'peakPassed', 'chartWindowLabel'));
     }
 }

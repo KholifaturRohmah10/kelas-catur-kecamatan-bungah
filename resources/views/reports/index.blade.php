@@ -89,7 +89,9 @@
                                     <button class="report-row-toggle" type="button" aria-expanded="false" data-report-toggle>
                                         <span class="report-row-toggle-copy">
                                             <p class="student-name">{{ $row['student']->name }}</p>
-                                            <p class="student-meta">{{ $row['student']->student_code }}{{ $row['student']->school_name ? ' - '.$row['student']->school_name : '' }}</p>
+                                            @if ($row['student']->school_name)
+                                                <p class="student-meta">{{ $row['student']->school_name }}</p>
+                                            @endif
                                         </span>
                                         <span class="report-row-toggle-hint" aria-hidden="true">
                                             <span class="report-row-toggle-open">Show more</span>

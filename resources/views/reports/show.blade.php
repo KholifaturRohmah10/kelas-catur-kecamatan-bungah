@@ -12,7 +12,7 @@
 </head>
 <body class="report-body">
     <section class="report-sheet report-sheet-compact">
-        <header class="report-header">
+        <header class="report-header report-header-no-meta">
             <div class="brand-mark">
                 <img src="{{ $brandImageHref }}" alt="Lambang Kabupaten Gresik">
             </div>
@@ -21,11 +21,6 @@
                 <p class="page-kicker report-kicker">Laporan Hasil Belajar Siswa</p>
                 <h1 class="report-title">KELAS CATUR Kecamatan Bungah</h1>
                 <p class="report-subtitle">Rapot perkembangan siswa program pembinaan catur</p>
-            </div>
-
-            <div class="report-meta report-meta-box">
-                <span class="identity-label">Tanggal Cetak</span>
-                <strong>{{ now()->translatedFormat('d F Y') }}</strong>
             </div>
         </header>
 
@@ -36,8 +31,8 @@
                     <tr>
                         <th>Nama Siswa</th>
                         <td>{{ $student->name }}</td>
-                        <th>Kode Siswa</th>
-                        <td>{{ $student->student_code }}</td>
+                        <th>Gender</th>
+                        <td>{{ $student->gender }}</td>
                     </tr>
                     <tr>
                         <th>Sekolah</th>
@@ -132,8 +127,8 @@
                 <strong>({{ $student->parent_name ?: '........................................' }})</strong>
             </article>
 
-            <article class="signature-card signature-card-formal">
-                <p class="report-meta">Bungah, {{ now()->translatedFormat('d F Y') }}</p>
+            <article class="signature-card signature-card-formal signature-card-mentor">
+                <p class="report-meta signature-place-date">GRESIK, {{ now()->locale('id')->translatedFormat('d F Y') }}</p>
                 <strong>Pembimbing</strong>
                 <div class="signature-space signature-space-compact"></div>
                 <strong>(........................................)</strong>

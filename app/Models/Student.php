@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
 
 class Student extends Model
 {
@@ -27,6 +29,27 @@ class Student extends Model
             'birth_date' => 'date',
             'registration_date' => 'date',
         ];
+    }
+
+    protected function name(): Attribute
+    {
+        return Attribute::make(
+            set: fn (?string $value) => $value !== null ? Str::upper($value) : null,
+        );
+    }
+
+    protected function parentName(): Attribute
+    {
+        return Attribute::make(
+            set: fn (?string $value) => $value !== null ? Str::upper($value) : null,
+        );
+    }
+
+    protected function address(): Attribute
+    {
+        return Attribute::make(
+            set: fn (?string $value) => $value !== null ? Str::upper($value) : null,
+        );
     }
 
     public function scores(): HasMany

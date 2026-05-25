@@ -26,13 +26,13 @@
         <div class="panel-header">
             <div>
                 <h3 class="panel-title">Grafik Siswa di Atas Nilai 60</h3>
-                <p class="panel-copy">Menampilkan materi dalam 1 bulan terakhir.</p>
+                <p class="panel-copy">Menampilkan materi dalam {{ $chartWindowLabel }}.</p>
             </div>
         </div>
 
         @if ($chartSessions->isEmpty())
             <div class="empty-state">
-                Belum ada data jadwal kelas dan nilai siswa dalam 1 bulan terakhir.
+                Belum ada data jadwal kelas dan nilai siswa dalam {{ $chartWindowLabel }}.
             </div>
         @else
             @if ($chartSessions->count() > 8)

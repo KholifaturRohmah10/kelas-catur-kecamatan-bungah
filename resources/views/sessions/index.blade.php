@@ -13,9 +13,9 @@
             <a class="btn btn-secondary" href="{{ route('session-history.index') }}">Buka Riwayat Kelas</a>
         </div>
 
-        @if ($students->isEmpty())
+        @if ($students->where('status', 'Aktif')->isEmpty())
             <div class="empty-state">
-                Belum ada siswa yang bisa dipilih. Tambahkan data terlebih dahulu dari menu Daftar Kelas Catur atau Data Siswa.
+                Belum ada siswa aktif yang bisa dinilai. Aktifkan siswa terlebih dahulu dari menu Data Siswa atau Daftar Kelas Catur.
             </div>
         @else
             <form action="{{ route('sessions.store') }}" method="POST">

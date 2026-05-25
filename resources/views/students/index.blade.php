@@ -12,7 +12,7 @@
 
         <form action="{{ route('students.index') }}" method="GET">
             <div class="table-actions">
-                <input type="text" name="search" value="{{ $search }}" placeholder="Cari nama / kode / sekolah">
+                <input type="text" name="search" value="{{ $search }}" placeholder="Cari nama / sekolah">
                 <button class="btn btn-primary" type="submit">Cari</button>
                 @if ($search !== '')
                     <a class="btn btn-light" href="{{ route('students.index') }}">Reset</a>
@@ -47,15 +47,15 @@
                     </thead>
                     <tbody>
                         @foreach ($students as $student)
+                            @php($statusBadgeClass = $student->status === 'Aktif' ? 'status-tag-active' : 'status-tag-inactive')
                             <tr data-collapsed="true">
                                 <td class="student-primary-cell" data-label="Siswa">
                                     <button class="student-row-toggle" type="button" aria-expanded="false" data-student-toggle>
                                         <span class="student-row-toggle-copy">
                                             <p class="student-name">{{ $student->name }}</p>
-                                            <p class="student-meta">
-                                                {{ $student->student_code }}
-                                                {{ $student->school_name ? ' - '.$student->school_name : '' }}
-                                            </p>
+                                            @if ($student->school_name)
+                                                <p class="student-meta">{{ $student->school_name }}</p>
+                                            @endif
                                         </span>
                                         <span class="student-row-toggle-hint" aria-hidden="true">
                                             <span class="student-row-toggle-open">Show more</span>
@@ -64,7 +64,7 @@
                                     </button>
                                 </td>
                                 <td class="student-row-detail-cell" data-label="Gender">{{ $student->gender }}</td>
-                                <td class="student-row-detail-cell" data-label="Status"><span class="badge">{{ $student->status }}</span></td>
+                                <td class="student-row-detail-cell" data-label="Status"><span class="badge {{ $statusBadgeClass }}">{{ $student->status }}</span></td>
                                 <td class="student-row-detail-cell" data-label="Kontak">
                                     <p class="student-name">{{ $student->phone ?: '-' }}</p>
                                     <p class="student-meta">{{ $student->parent_name ?: 'Wali belum diisi' }}</p>

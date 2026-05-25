@@ -1,0 +1,36 @@
+<?php
+
+namespace App\Http\Middleware;
+
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\Response;
+
+class BypassAuthenticationWhenEnabled
+{
+    public function handle(Request $request, \Closure $next): Response
+    {
+        if (! (bool) config('auth.login_bypass.enabled')) {
+            return $next($request);
+        }
+
+        if ($request->is('login') || trim($request->path(), '/') === '') {
+            return $next($request);
+        }
+
+        if (! Auth::check()) {
+            $user = User::query()->firstOrCreate(
+                ['email' => (string) config('auth.login_bypass.email')],
+                [
+                    'name' => (string) config('auth.login_bypass.name'),
+                    'password' => bin2hex(random_bytes(16)),
+                ],
+            );
+
+            Auth::onceUsingId($user->getAuthIdentifier());
+        }
+
+        return $next($request);
+    }
+}

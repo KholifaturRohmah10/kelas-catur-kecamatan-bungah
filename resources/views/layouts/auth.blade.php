@@ -21,13 +21,34 @@
 </head>
 <body class="auth-body">
     <button class="theme-toggle auth-theme-toggle" type="button" data-theme-toggle aria-label="Ubah mode tampilan">
-        <span class="theme-toggle-icon" aria-hidden="true"></span>
-        <span data-theme-label>Mode</span>
+        <span class="theme-toggle-icon" aria-hidden="true">
+            <svg class="theme-toggle-glyph theme-toggle-glyph-moon" viewBox="0 0 24 24">
+                <path d="M20.2 14.4A8.6 8.6 0 1 1 9.6 3.8a7.2 7.2 0 0 0 10.6 10.6Z"/>
+            </svg>
+            <svg class="theme-toggle-glyph theme-toggle-glyph-sun" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="4"/>
+                <path d="M12 2.5v2.2"/>
+                <path d="M12 19.3v2.2"/>
+                <path d="M21.5 12h-2.2"/>
+                <path d="M4.7 12H2.5"/>
+                <path d="m18.7 5.3-1.6 1.6"/>
+                <path d="m6.9 17.1-1.6 1.6"/>
+                <path d="m18.7 18.7-1.6-1.6"/>
+                <path d="m6.9 6.9-1.6-1.6"/>
+            </svg>
+        </span>
+        <span class="sr-only" data-theme-label>Mode</span>
     </button>
 
     @include('partials.flash')
 
-    @yield('content')
+    <div class="auth-stage">
+        @yield('content')
+    </div>
+
+    <footer class="page-footer auth-page-footer">
+        <span class="page-footer-text">Developed by @aemmaaa</span>
+    </footer>
 
     <script>
         (function () {
@@ -60,6 +81,54 @@
             });
 
             applyTheme(root.dataset.theme || 'light');
+        }());
+
+        (function () {
+            const clickableSelector = 'button, a.btn';
+            const pressedClass = 'is-clicked';
+
+            const markAsClicked = function (element) {
+                if (!element || element.disabled || element.getAttribute('aria-disabled') === 'true') {
+                    return;
+                }
+
+                if (element.__clickFeedbackTimer) {
+                    window.clearTimeout(element.__clickFeedbackTimer);
+                }
+
+                element.classList.remove(pressedClass);
+
+                window.requestAnimationFrame(function () {
+                    element.classList.add(pressedClass);
+                    element.__clickFeedbackTimer = window.setTimeout(function () {
+                        element.classList.remove(pressedClass);
+                    }, 180);
+                });
+            };
+
+            document.addEventListener('pointerdown', function (event) {
+                const target = event.target.closest(clickableSelector);
+
+                if (!target) {
+                    return;
+                }
+
+                markAsClicked(target);
+            });
+
+            document.addEventListener('keydown', function (event) {
+                if (event.key !== 'Enter' && event.key !== ' ') {
+                    return;
+                }
+
+                const target = event.target.closest(clickableSelector);
+
+                if (!target) {
+                    return;
+                }
+
+                markAsClicked(target);
+            });
         }());
     </script>
 

@@ -7,18 +7,32 @@ use App\Http\Controllers\ProgressController;
 use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\StudentController;
+use App\Support\DatabaseConnectionState;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return auth()->check()
-        ? redirect()->route('dashboard')
-        : redirect()->route('login');
+Route::get('/', function (Request $request) {
+    try {
+        return auth()->check()
+            ? redirect()->route('dashboard')
+            : redirect()->route('login');
+    } catch (Throwable $exception) {
+        if (DatabaseConnectionState::isUnavailable($exception)) {
+            report($exception);
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            return redirect()->route('login')->withErrors([
+                'email' => DatabaseConnectionState::loginHelpMessage(),
+            ]);
+        }
+
+        throw $exception;
+    }
 });
 
-Route::middleware('guest')->group(function (): void {
-    Route::get('/login', [AuthController::class, 'create'])->name('login');
-    Route::post('/login', [AuthController::class, 'store'])->name('login.attempt');
-});
+Route::get('/login', [AuthController::class, 'create'])->name('login');
+Route::post('/login', [AuthController::class, 'store'])->name('login.attempt');
 
 Route::middleware('auth')->group(function (): void {
     Route::post('/logout', [AuthController::class, 'destroy'])->name('logout');

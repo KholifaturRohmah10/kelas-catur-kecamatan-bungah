@@ -10,16 +10,9 @@
 @endphp
 
 <div class="form-grid">
-    @if (isset($student))
-        <div class="form-group">
-            <label>Kode siswa</label>
-            <div class="code-badge">{{ $student->student_code }}</div>
-        </div>
-    @endif
-
     <div class="form-group">
         <label for="name">Nama lengkap <span class="required-mark">*</span></label>
-        <input id="name" name="name" type="text" value="{{ old('name', $student->name ?? '') }}" placeholder="Contoh: Aditya Nugraha" required>
+        <input id="name" name="name" type="text" value="{{ old('name', $student->name ?? '') }}" placeholder="Contoh: Aditya Nugraha" data-uppercase required>
         @error('name')
             <span class="field-error">{{ $message }}</span>
         @enderror
@@ -56,7 +49,7 @@
 
     <div class="form-group">
         <label for="parent_name">Nama orang tua / wali <span class="required-mark">*</span></label>
-        <input id="parent_name" name="parent_name" type="text" value="{{ old('parent_name', $student->parent_name ?? '') }}" placeholder="Nama orang tua / wali" required>
+        <input id="parent_name" name="parent_name" type="text" value="{{ old('parent_name', $student->parent_name ?? '') }}" placeholder="Nama orang tua / wali" data-uppercase required>
         @error('parent_name')
             <span class="field-error">{{ $message }}</span>
         @enderror
@@ -100,7 +93,7 @@
 
     <div class="form-group full-width">
         <label for="address">Alamat <span class="required-mark">*</span></label>
-        <textarea id="address" name="address" placeholder="Alamat lengkap siswa" required>{{ old('address', $student->address ?? '') }}</textarea>
+        <textarea id="address" name="address" placeholder="Alamat lengkap siswa" data-uppercase required>{{ old('address', $student->address ?? '') }}</textarea>
         @error('address')
             <span class="field-error">{{ $message }}</span>
         @enderror

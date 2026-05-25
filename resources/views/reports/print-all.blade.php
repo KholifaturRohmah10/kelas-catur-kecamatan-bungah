@@ -20,7 +20,7 @@
             <div class="report-header-copy">
                 <p class="page-kicker report-kicker">Rekap Seluruh Nilai Siswa</p>
                 <h1 class="report-title">KELAS CATUR Kecamatan Bungah</h1>
-                <p class="report-subtitle">Ringkasan dan seluruh nilai siswa untuk acuan cetak administrasi kelas.</p>
+                <p class="report-subtitle">Ringkasan dan seluruh nilai siswa untuk acuan cetak dan pengelolaan kelas.</p>
             </div>
 
             <div class="report-meta report-meta-box">
@@ -36,18 +36,18 @@
 
         <section class="report-student-stack">
             @foreach ($reports as $row)
+                @php($statusBadgeClass = $row['student']->status === 'Aktif' ? 'status-tag-active' : 'status-tag-inactive')
                 <article class="report-block report-student-block">
                     <div class="report-student-header">
                         <div>
                             <h2 class="report-student-title">{{ $row['student']->name }}</h2>
-                            <p class="report-meta">
-                                {{ $row['student']->student_code }}
-                                {{ $row['student']->school_name ? ' - '.$row['student']->school_name : '' }}
-                            </p>
+                            @if ($row['student']->school_name)
+                                <p class="report-meta">{{ $row['student']->school_name }}</p>
+                            @endif
                         </div>
 
                         <div class="report-student-badges">
-                            <span class="report-score-note">{{ $row['student']->status }}</span>
+                            <span class="report-score-note {{ $statusBadgeClass }}">{{ $row['student']->status }}</span>
                             <span class="report-score-note">
                                 Indeks {{ $selectedMonthLabel }}:
                                 {{ $row['selected_index'] ? number_format($row['selected_index']['average'], 1, ',', '.') : '-' }}

@@ -44,13 +44,16 @@
             @else
                 <div class="registration-list">
                     @foreach ($students as $student)
+                        @php($statusBadgeClass = $student->status === 'Aktif' ? 'status-tag-active' : 'status-tag-inactive')
                         <article class="registration-card">
                             <div class="registration-top">
                                 <div>
                                     <p class="student-name">{{ $student->name }}</p>
-                                    <p class="student-meta">{{ $student->student_code }}{{ $student->school_name ? ' - '.$student->school_name : '' }}</p>
+                                    @if ($student->school_name)
+                                        <p class="student-meta">{{ $student->school_name }}</p>
+                                    @endif
                                 </div>
-                                <span class="badge">{{ $student->status }}</span>
+                                <span class="badge {{ $statusBadgeClass }}">{{ $student->status }}</span>
                             </div>
 
                             <div class="registration-meta-row">

@@ -2,6 +2,11 @@
 
 use Illuminate\Support\Str;
 
+$defaultSessionCookie = Str::slug((string) env('APP_NAME', 'laravel')).'-session';
+$sessionCookiePortSuffix = PHP_SAPI !== 'cli' && isset($_SERVER['SERVER_PORT'])
+    ? '-'.$_SERVER['SERVER_PORT']
+    : '';
+
 return [
 
     /*
@@ -129,7 +134,7 @@ return [
 
     'cookie' => env(
         'SESSION_COOKIE',
-        Str::slug((string) env('APP_NAME', 'laravel')).'-session'
+        $defaultSessionCookie.$sessionCookiePortSuffix
     ),
 
     /*

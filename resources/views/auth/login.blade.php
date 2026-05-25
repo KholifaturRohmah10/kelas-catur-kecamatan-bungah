@@ -9,7 +9,7 @@
         <section class="auth-showcase" aria-hidden="true">
             <div class="auth-showcase-board"></div>
             <div class="auth-showcase-copy">
-                <span class="auth-kicker">Sistem Administrasi</span>
+                <span class="auth-kicker">Sistem Kelas Catur</span>
                 <h1 class="auth-title">Kelas Catur yang rapi, aman, dan siap dipakai setiap hari.</h1>
                 <p class="auth-copy">
                     Kelola pendaftaran, jadwal, perkembangan, dan rapot siswa dalam satu dashboard yang
@@ -51,19 +51,24 @@
                 </div>
             </div>
 
-            <form class="auth-form" method="POST" action="{{ route('login.attempt') }}">
-                @csrf
+            <form
+                class="auth-form"
+                method="{{ config('auth.login_bypass.enabled') ? 'GET' : 'POST' }}"
+                action="{{ config('auth.login_bypass.enabled') ? route('dashboard', [], false) : route('login.attempt', [], false) }}"
+            >
+                @unless (config('auth.login_bypass.enabled'))
+                    @csrf
+                @endunless
 
                 <div class="form-group">
                     <label for="email">Email admin</label>
                     <input
                         id="email"
-                        name="email"
+                        name="{{ config('auth.login_bypass.enabled') ? '' : 'email' }}"
                         type="email"
                         value="{{ old('email') }}"
                         autocomplete="email"
                         placeholder="adminkc@gmail.com"
-                        required
                     >
                     @error('email')
                         <span class="field-error">{{ $message }}</span>
@@ -75,11 +80,10 @@
                     <div class="password-field">
                         <input
                             id="password"
-                            name="password"
+                            name="{{ config('auth.login_bypass.enabled') ? '' : 'password' }}"
                             type="password"
                             autocomplete="current-password"
                             placeholder="Masukkan kata sandi"
-                            required
                             data-password-input
                         >
                         <button
@@ -98,7 +102,7 @@
                 </div>
 
                 <label class="auth-remember">
-                    <input type="checkbox" name="remember" value="1">
+                    <input type="checkbox" name="{{ config('auth.login_bypass.enabled') ? '' : 'remember' }}" value="1">
                     <span>Ingat saya di perangkat ini</span>
                 </label>
 

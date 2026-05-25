@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
 
 class ClassSession extends Model
 {
@@ -19,6 +21,13 @@ class ClassSession extends Model
         return [
             'session_date' => 'date',
         ];
+    }
+
+    protected function title(): Attribute
+    {
+        return Attribute::make(
+            set: fn (?string $value) => $value !== null ? Str::upper($value) : null,
+        );
     }
 
     public function scores(): HasMany

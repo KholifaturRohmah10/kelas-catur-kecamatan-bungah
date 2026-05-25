@@ -24,8 +24,10 @@
     <button class="sidebar-backdrop" type="button" aria-hidden="true" tabindex="-1" data-sidebar-backdrop></button>
 
     <div class="shell">
+        @php($currentUser = auth()->user())
+        @php($topbarUserInitial = $currentUser ? (string) \Illuminate\Support\Str::of($currentUser->name)->trim()->substr(0, 1)->upper() : '')
+
         <aside class="sidebar" id="app-sidebar">
-            @php($currentUser = auth()->user())
             <div class="brand">
                 <div class="brand-mark">
                     <img src="{{ $brandImage }}" alt="Lambang Kabupaten Gresik">
@@ -80,64 +82,93 @@
                 </a>
             </nav>
 
-            @if ($currentUser)
-                <div class="sidebar-footer">
-                    <div class="sidebar-user-card">
-                        <span class="sidebar-user-label">Masuk sebagai</span>
-                        <strong class="sidebar-user-name">{{ $currentUser->name }}</strong>
-                        <p class="sidebar-user-email">{{ $currentUser->email }}</p>
-                    </div>
-
-                    <form action="{{ route('logout') }}" method="POST">
-                        @csrf
-                        <button class="btn btn-light sidebar-logout-button" type="submit">
-                            <span class="btn-icon" aria-hidden="true">
-                                <svg viewBox="0 0 24 24"><path d="M10 5H6.5A1.5 1.5 0 0 0 5 6.5v11A1.5 1.5 0 0 0 6.5 19H10"/><path d="M15 8l4 4-4 4"/><path d="M19 12H10"/></svg>
-                            </span>
-                            <span>Keluar</span>
-                        </button>
-                    </form>
-                </div>
-            @endif
         </aside>
 
         <main class="main-content">
             <header class="topbar">
-                <div class="topbar-heading">
-                    <button
-                        class="sidebar-toggle"
-                        type="button"
-                        aria-label="Buka menu"
-                        aria-controls="app-sidebar"
-                        aria-expanded="false"
-                        data-sidebar-toggle
-                    >
-                        <span class="sidebar-toggle-dots" aria-hidden="true">
-                            <span class="sidebar-toggle-dot"></span>
-                            <span class="sidebar-toggle-dot"></span>
-                            <span class="sidebar-toggle-dot"></span>
-                        </span>
-                    </button>
+                @php($pageDescription = trim($__env->yieldContent('page_description', '')))
 
-                    <div class="topbar-copy">
-                        <p class="page-kicker">@yield('kicker', 'Kelas Catur')</p>
-                        <h2 class="topbar-title">@yield('page_heading', 'Dashboard')</h2>
-                        @php($pageDescription = trim($__env->yieldContent('page_description', '')))
-                        @if ($pageDescription !== '')
-                            <p class="topbar-subtitle">{{ $pageDescription }}</p>
-                        @endif
+                <div class="topbar-shell">
+                    <div class="topbar-heading">
+                        <button
+                            class="sidebar-toggle"
+                            type="button"
+                            aria-label="Buka menu"
+                            aria-controls="app-sidebar"
+                            aria-expanded="false"
+                            data-sidebar-toggle
+                        >
+                            <span class="sidebar-toggle-dots" aria-hidden="true">
+                                <span class="sidebar-toggle-dot"></span>
+                                <span class="sidebar-toggle-dot"></span>
+                                <span class="sidebar-toggle-dot"></span>
+                            </span>
+                        </button>
+
+                        <div class="topbar-copy">
+                            <h2 class="topbar-title">@yield('page_heading', 'Dashboard')</h2>
+                            @if ($pageDescription !== '')
+                                <p class="topbar-subtitle">{{ $pageDescription }}</p>
+                            @endif
+                        </div>
                     </div>
-                </div>
 
-                <div class="topbar-metas">
-                    <button class="theme-toggle" type="button" data-theme-toggle aria-label="Ubah mode tampilan">
-                        <span class="theme-toggle-icon" aria-hidden="true"></span>
-                        <span data-theme-label>Mode</span>
-                    </button>
+                    <div class="topbar-metas">
+                        <button class="theme-toggle" type="button" data-theme-toggle aria-label="Ubah mode tampilan">
+                            <span class="theme-toggle-icon" aria-hidden="true">
+                                <svg class="theme-toggle-glyph theme-toggle-glyph-moon" viewBox="0 0 24 24">
+                                    <path d="M20.2 14.4A8.6 8.6 0 1 1 9.6 3.8a7.2 7.2 0 0 0 10.6 10.6Z"/>
+                                </svg>
+                                <svg class="theme-toggle-glyph theme-toggle-glyph-sun" viewBox="0 0 24 24">
+                                    <circle cx="12" cy="12" r="4"/>
+                                    <path d="M12 2.5v2.2"/>
+                                    <path d="M12 19.3v2.2"/>
+                                    <path d="M21.5 12h-2.2"/>
+                                    <path d="M4.7 12H2.5"/>
+                                    <path d="m18.7 5.3-1.6 1.6"/>
+                                    <path d="m6.9 17.1-1.6 1.6"/>
+                                    <path d="m18.7 18.7-1.6-1.6"/>
+                                    <path d="m6.9 6.9-1.6-1.6"/>
+                                </svg>
+                            </span>
+                            <span class="sr-only" data-theme-label>Mode</span>
+                        </button>
 
-                    <div class="meta-card meta-card-date">
-                        <span class="meta-card-label">Hari ini</span>
-                        <strong class="meta-card-value">{{ now()->translatedFormat('d F Y') }}</strong>
+                        @if ($currentUser)
+                            <div class="topbar-account" data-account-menu>
+                                <button
+                                    class="topbar-user"
+                                    type="button"
+                                    aria-label="Buka menu akun {{ $currentUser->name }}"
+                                    aria-haspopup="true"
+                                    aria-expanded="false"
+                                    data-account-trigger
+                                >
+                                    <span class="topbar-user-avatar">{{ $topbarUserInitial }}</span>
+                                    <span class="topbar-user-caret" aria-hidden="true">
+                                        <svg viewBox="0 0 24 24"><path d="m7 10 5 5 5-5"/></svg>
+                                    </span>
+                                </button>
+
+                                <div class="topbar-account-panel" aria-hidden="true" data-account-panel>
+                                    <div class="topbar-account-card">
+                                        <span class="topbar-account-label">Masuk sebagai</span>
+                                        <strong class="topbar-account-name">{{ $currentUser->name }}</strong>
+                                        <p class="topbar-account-email">{{ $currentUser->email }}</p>
+                                    </div>
+
+                                    <form action="{{ route('logout', [], false) }}" method="POST" class="topbar-account-form">
+                                        @csrf
+                                        <button class="topbar-account-logout" type="submit">
+                                            <span class="btn-icon" aria-hidden="true">
+                                                <svg viewBox="0 0 24 24"><path d="M10 5H6.5A1.5 1.5 0 0 0 5 6.5v11A1.5 1.5 0 0 0 6.5 19H10"/><path d="M15 8l4 4-4 4"/><path d="M19 12H10"/></svg>
+                                            </span>
+                                            <span>Keluar</span>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </header>
@@ -145,6 +176,10 @@
             @include('partials.flash')
 
             @yield('content')
+
+            <footer class="page-footer app-page-footer">
+                <span class="page-footer-text">Developed by @aemmaaa</span>
+            </footer>
         </main>
     </div>
 
@@ -179,6 +214,54 @@
             });
 
             applyTheme(root.dataset.theme || 'light');
+        }());
+
+        (function () {
+            const clickableSelector = 'button, a.btn';
+            const pressedClass = 'is-clicked';
+
+            const markAsClicked = function (element) {
+                if (!element || element.disabled || element.getAttribute('aria-disabled') === 'true') {
+                    return;
+                }
+
+                if (element.__clickFeedbackTimer) {
+                    window.clearTimeout(element.__clickFeedbackTimer);
+                }
+
+                element.classList.remove(pressedClass);
+
+                window.requestAnimationFrame(function () {
+                    element.classList.add(pressedClass);
+                    element.__clickFeedbackTimer = window.setTimeout(function () {
+                        element.classList.remove(pressedClass);
+                    }, 180);
+                });
+            };
+
+            document.addEventListener('pointerdown', function (event) {
+                const target = event.target.closest(clickableSelector);
+
+                if (!target) {
+                    return;
+                }
+
+                markAsClicked(target);
+            });
+
+            document.addEventListener('keydown', function (event) {
+                if (event.key !== 'Enter' && event.key !== ' ') {
+                    return;
+                }
+
+                const target = event.target.closest(clickableSelector);
+
+                if (!target) {
+                    return;
+                }
+
+                markAsClicked(target);
+            });
         }());
 
         (function () {
@@ -280,6 +363,109 @@
         }());
 
         (function () {
+            const accountMenus = document.querySelectorAll('[data-account-menu]');
+
+            if (!accountMenus.length) {
+                return;
+            }
+
+            const closeMenu = function (menu, options) {
+                const settings = options || {};
+                const trigger = menu.querySelector('[data-account-trigger]');
+                const panel = menu.querySelector('[data-account-panel]');
+
+                if (!trigger || !panel) {
+                    return;
+                }
+
+                trigger.setAttribute('aria-expanded', 'false');
+                panel.setAttribute('aria-hidden', 'true');
+                menu.classList.remove('is-open');
+
+                if (settings.restoreFocus && menu.contains(document.activeElement)) {
+                    trigger.focus();
+                }
+            };
+
+            const openMenu = function (menu) {
+                const trigger = menu.querySelector('[data-account-trigger]');
+                const panel = menu.querySelector('[data-account-panel]');
+
+                if (!trigger || !panel) {
+                    return;
+                }
+
+                trigger.setAttribute('aria-expanded', 'true');
+                panel.setAttribute('aria-hidden', 'false');
+                menu.classList.add('is-open');
+            };
+
+            const closeAllMenus = function (exceptMenu, options) {
+                accountMenus.forEach(function (menu) {
+                    if (menu === exceptMenu) {
+                        return;
+                    }
+
+                    closeMenu(menu, options);
+                });
+            };
+
+            accountMenus.forEach(function (menu) {
+                const trigger = menu.querySelector('[data-account-trigger]');
+                const panel = menu.querySelector('[data-account-panel]');
+
+                if (!trigger || !panel) {
+                    return;
+                }
+
+                trigger.addEventListener('click', function () {
+                    const isExpanded = trigger.getAttribute('aria-expanded') === 'true';
+
+                    closeAllMenus(menu);
+
+                    if (isExpanded) {
+                        closeMenu(menu);
+                        return;
+                    }
+
+                    openMenu(menu);
+                });
+
+                menu.addEventListener('focusout', function () {
+                    window.setTimeout(function () {
+                        if (menu.contains(document.activeElement)) {
+                            return;
+                        }
+
+                        closeMenu(menu);
+                    }, 0);
+                });
+            });
+
+            document.addEventListener('pointerdown', function (event) {
+                accountMenus.forEach(function (menu) {
+                    if (menu.contains(event.target)) {
+                        return;
+                    }
+
+                    closeMenu(menu);
+                });
+            });
+
+            document.addEventListener('keydown', function (event) {
+                if (event.key !== 'Escape') {
+                    return;
+                }
+
+                closeAllMenus(null, { restoreFocus: true });
+            });
+
+            window.addEventListener('resize', function () {
+                closeAllMenus(null);
+            });
+        }());
+
+        (function () {
             document.querySelectorAll('[data-required-alert-form]').forEach(function (form) {
                 form.addEventListener('submit', function (event) {
                     if (form.checkValidity()) {
@@ -290,6 +476,36 @@
                     alert('Mohon lengkapi semua kolom wajib bertanda * merah terlebih dahulu.');
                     form.reportValidity();
                 });
+            });
+        }());
+
+        (function () {
+            const syncUppercaseValue = function (field) {
+                if (!field || typeof field.value !== 'string') {
+                    return;
+                }
+
+                const start = typeof field.selectionStart === 'number' ? field.selectionStart : null;
+                const end = typeof field.selectionEnd === 'number' ? field.selectionEnd : null;
+                const uppercaseValue = field.value.toLocaleUpperCase('id-ID');
+
+                if (field.value === uppercaseValue) {
+                    return;
+                }
+
+                field.value = uppercaseValue;
+
+                if (start !== null && end !== null && document.activeElement === field) {
+                    field.setSelectionRange(start, end);
+                }
+            };
+
+            document.querySelectorAll('[data-uppercase]').forEach(function (field) {
+                field.addEventListener('input', function () {
+                    syncUppercaseValue(field);
+                });
+
+                syncUppercaseValue(field);
             });
         }());
     </script>
