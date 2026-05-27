@@ -1,5 +1,5 @@
 CATATAN LANJUT UNTUK AI / CODEX
-Tanggal catatan: 2026-05-26
+Tanggal catatan: 2026-05-27
 Project lokal: c:\xampp\htdocs\kelas_catur
 Repository GitHub: KholifaturRohmah10/kelas-catur-kecamatan-bungah
 Branch utama: main
@@ -59,8 +59,13 @@ RIWAYAT DESAIN DAN UI
 - Login sudah dipoles agar tombol light/dark menyatu di panel login, bukan berdiri sendiri di pojok.
 - Mobile login terakhir diperbaiki agar bagian showcase/tambahan juga tampil di phone, bukan hanya form login.
 - Drawer mobile terakhir diperbaiki agar bisa discroll ke bawah, spacing atas dikurangi, dan lebih responsif.
+- Responsif iPhone/iOS terakhir diperbaiki karena Safari iPhone membuat input date/select melebar keluar container.
+- Checkbox "Ingat saya di perangkat ini" terakhir diperbaiki karena selector global .auth-form input sempat memaksa checkbox jadi width 100%, membuat checkbox dan teks kepisah jauh.
 
 KOMIT TERBARU YANG SUDAH DIPUSH
+- 5141577 Fix remember checkbox layout
+- f35426e Fix iOS mobile form responsiveness
+- cd3cef4 Add continuation notes for future AI sessions
 - 38ff75f Improve mobile login and drawer responsiveness
 - cbad4ab Refine collapsed sidebar spacing
 - 17f68de Polish login and sidebar interactions
@@ -101,6 +106,9 @@ HAL YANG PERLU DIPERHATIKAN JIKA LANJUT EDIT CSS
 - Jika menambah polish baru, lebih aman tambahkan blok kecil di bagian paling akhir CSS, lalu validasi.
 - Jangan refactor besar CSS kecuali diminta, karena sudah banyak override untuk mengejar deploy cepat.
 - Pastikan text tidak overlap dan tombol tidak keluar container di mobile.
+- Ada blok "Cross-device responsive guard, especially for iOS Safari form controls" di bagian bawah CSS. Blok ini sengaja ada untuk mencegah input/select/textarea meluber di Safari iPhone.
+- Jangan mengubah selector .auth-form input:not([type="checkbox"]) menjadi .auth-form input biasa, karena itu akan merusak checkbox "Ingat saya".
+- Jika ada masalah responsif iPhone, cek dulu box-sizing, min-width, max-width, safe-area, dan input date/select intrinsic width sebelum mengubah markup.
 
 HAL YANG PERLU DIPERHATIKAN JIKA LANJUT DEPLOY
 - Setelah push ke main, Vercel biasanya auto redeploy.
