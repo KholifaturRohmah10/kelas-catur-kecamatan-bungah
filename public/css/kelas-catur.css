@@ -5474,7 +5474,7 @@ body.sidebar-collapsed .sidebar {
     .form-group textarea,
     .toolbar input,
     .toolbar select,
-    .auth-form input,
+    .auth-form input:not([type="checkbox"]),
     .password-field,
     .code-badge {
         width: 100%;
@@ -5500,6 +5500,36 @@ body.sidebar-collapsed .sidebar {
 
     .form-group select {
         min-height: 52px;
+    }
+
+    .auth-remember {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        justify-self: start;
+        width: fit-content;
+        max-width: 100%;
+        gap: 10px;
+        margin: 0;
+        text-align: left;
+    }
+
+    .auth-remember input[type="checkbox"] {
+        flex: 0 0 16px;
+        width: 16px !important;
+        min-width: 16px;
+        max-width: 16px;
+        height: 16px;
+        margin: 0;
+        padding: 0;
+    }
+
+    .auth-remember span {
+        display: inline-block;
+        min-width: 0;
+        max-width: 100%;
+        line-height: 1.4;
+        text-align: left;
     }
 }
 
@@ -5545,6 +5575,10 @@ body.sidebar-collapsed .sidebar {
     .spacer-top .btn {
         width: 100%;
         min-width: 0;
+    }
+
+    .auth-remember {
+        width: 100%;
     }
 }
 
