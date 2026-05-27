@@ -5435,3 +5435,137 @@ body.sidebar-collapsed .sidebar {
         max-width: min(320px, calc(100vw - 22px));
     }
 }
+
+/* Cross-device responsive guard, especially for iOS Safari form controls. */
+@media screen {
+    *,
+    *::before,
+    *::after {
+        box-sizing: border-box;
+    }
+
+    html,
+    body {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+
+    .shell,
+    .main-content,
+    .panel,
+    .toolbar,
+    .hero-panel,
+    .meta-card,
+    .metric-card,
+    .mini-card,
+    .registration-card,
+    .history-session-card,
+    .report-score-card,
+    .form-grid,
+    .form-group,
+    form {
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea,
+    .toolbar input,
+    .toolbar select,
+    .auth-form input,
+    .password-field,
+    .code-badge {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        -webkit-text-size-adjust: 100%;
+        font-size: 16px;
+    }
+
+    .form-group input[type="date"],
+    .form-group input[type="month"],
+    .toolbar input[type="month"] {
+        display: block;
+        min-height: 52px;
+        line-height: 1.2;
+        text-align: left;
+    }
+
+    .form-group select {
+        min-height: 52px;
+    }
+}
+
+@media screen and (max-width: 820px) {
+    .shell {
+        width: 100%;
+        max-width: 100%;
+        padding-left: max(10px, env(safe-area-inset-left));
+        padding-right: max(10px, env(safe-area-inset-right));
+    }
+
+    .main-content {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .panel,
+    .toolbar,
+    .hero-panel {
+        width: 100%;
+        padding-inline: clamp(14px, 4vw, 20px);
+    }
+
+    .form-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 14px;
+    }
+
+    .form-group {
+        width: 100%;
+    }
+
+    .form-group label {
+        line-height: 1.25;
+    }
+
+    .form-actions,
+    .spacer-top {
+        width: 100%;
+    }
+
+    .form-actions .btn,
+    .spacer-top .btn {
+        width: 100%;
+        min-width: 0;
+    }
+}
+
+@media screen and (max-width: 390px) {
+    .shell {
+        padding-left: max(8px, env(safe-area-inset-left));
+        padding-right: max(8px, env(safe-area-inset-right));
+    }
+
+    .panel,
+    .toolbar,
+    .hero-panel {
+        padding-inline: 12px;
+        border-radius: 14px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea,
+    .code-badge {
+        padding-inline: 12px;
+        border-radius: 12px;
+    }
+}
