@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\UserRole;
 use App\Models\User;
 
 return [
@@ -118,6 +119,7 @@ return [
         'enabled' => env('AUTH_LOGIN_BYPASS', false),
         'name' => env('AUTH_LOGIN_BYPASS_NAME', 'ADMIN KELAS CATUR'),
         'email' => env('AUTH_LOGIN_BYPASS_EMAIL', 'adminkc@gmail.com'),
+        'role' => env('AUTH_LOGIN_BYPASS_ROLE', UserRole::Admin->value),
     ],
 
 ];

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Enums\UserRole;
 use App\Models\ClassSession;
 use App\Models\Student;
 use App\Models\StudentScore;
@@ -72,6 +73,7 @@ class ExampleTest extends TestCase
         $this->assertAuthenticated();
         $this->assertDatabaseHas('users', [
             'email' => 'adminkc@gmail.com',
+            'role' => UserRole::Admin->value,
         ]);
     }
 
@@ -101,6 +103,26 @@ class ExampleTest extends TestCase
 
         $response->assertOk();
         $response->assertSee('Dashboard');
+    }
+
+    public function test_login_bypass_uses_configured_role_for_the_authenticated_account(): void
+    {
+        config()->set('auth.login_bypass.enabled', true);
+        config()->set('auth.login_bypass.email', 'pimpinan@example.com');
+        config()->set('auth.login_bypass.name', 'Pimpinan Uji');
+        config()->set('auth.login_bypass.role', UserRole::Pimpinan->value);
+
+        $response = $this->post('/login', [
+            'email' => '',
+            'password' => '',
+        ]);
+
+        $response->assertRedirect('/dashboard');
+        $this->assertAuthenticated();
+        $this->assertDatabaseHas('users', [
+            'email' => 'pimpinan@example.com',
+            'role' => UserRole::Pimpinan->value,
+        ]);
     }
 
     public function test_logout_returns_user_to_login_page(): void
@@ -171,6 +193,16 @@ class ExampleTest extends TestCase
 
         $response->assertOk();
         $response->assertSee('Rekap Seluruh Nilai Siswa');
+    }
+
+    public function test_authenticated_user_can_see_their_role_label_in_the_account_panel(): void
+    {
+        $response = $this->actingAs(User::factory()->create([
+            'role' => UserRole::Operator,
+        ]))->get('/dashboard');
+
+        $response->assertOk();
+        $response->assertSee('Operator');
     }
 
     public function test_registration_uppercases_student_identity_fields_before_saving(): void

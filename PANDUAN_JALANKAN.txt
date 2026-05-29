@@ -59,6 +59,14 @@ PANDUAN MENJALANKAN PROGRAM KELAS CATUR
 12. Jika ingin refresh database dari awal:
    php artisan migrate:fresh
 
+13. Rencana role pengguna untuk pengembangan lanjutan:
+   Jika aplikasi ini dikembangkan ke modul layanan surat/administrasi,
+   role minimal yang disiapkan adalah:
+   - User/pemohon: login, pilih jenis surat, isi form, upload lampiran
+   - Operator: cek kelengkapan, approve/reject, wajib isi alasan jika menolak
+   - Pimpinan/pak camat: approval akhir atau pihak penandatangan
+   - Admin: atur nomor urut awal, kode tiap jenis surat, data master, dan user/role
+
 Catatan:
 - Nilai siswa diinput pada rentang 0 sampai 100.
 - Nilai yang dimasukkan pada Jadwal Kelas akan otomatis muncul di menu Perkembangan Siswa dan Cetak Rapot.

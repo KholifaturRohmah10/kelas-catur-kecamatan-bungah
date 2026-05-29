@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\UserRole;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -19,6 +20,7 @@ class DatabaseSeeder extends Seeder
         $adminEmail = (string) env('DEFAULT_ADMIN_EMAIL', 'adminkc@gmail.com');
         $adminPassword = (string) env('DEFAULT_ADMIN_PASSWORD', 'catur1');
         $adminName = (string) env('DEFAULT_ADMIN_NAME', 'Admin Kelas Catur');
+        $adminRole = UserRole::tryFrom((string) env('DEFAULT_ADMIN_ROLE', UserRole::Admin->value)) ?? UserRole::Admin;
 
         $admin = User::query()
             ->where('email', $adminEmail)
@@ -29,6 +31,7 @@ class DatabaseSeeder extends Seeder
         $admin->forceFill([
             'name' => $adminName,
             'email' => $adminEmail,
+            'role' => $adminRole,
             'email_verified_at' => now(),
             'password' => Hash::make($adminPassword),
         ])->save();

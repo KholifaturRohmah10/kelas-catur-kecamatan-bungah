@@ -116,6 +116,14 @@ HAL YANG PERLU DIPERHATIKAN JIKA LANJUT DEPLOY
 - Untuk migrasi production, gunakan command sesuai panduan: php artisan migrate --force, dijalankan di environment yang benar.
 - Jangan menjalankan perintah destructive seperti reset hard.
 
+ARAH PENGEMBANGAN ROLE
+- Fondasi role user sudah mulai disiapkan di tabel users dengan 4 role target: pemohon, operator, pimpinan, admin.
+- Ringkasan tanggung jawab:
+  pemohon = login, pilih jenis surat, isi form, upload lampiran
+  operator = cek kelengkapan, approve/reject, wajib isi alasan jika menolak
+  pimpinan = approval akhir / pihak penandatangan
+  admin = atur nomor urut awal, kode tiap jenis surat, data master, dan user/role
+
 FORMAT JAWABAN FINAL YANG DISUKAI
 Contoh:
 "Beres bang, sudah saya fix dan push.

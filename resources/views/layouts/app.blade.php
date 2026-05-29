@@ -170,6 +170,7 @@
                                         <span class="topbar-account-label">Masuk sebagai</span>
                                         <strong class="topbar-account-name">{{ $currentUser->name }}</strong>
                                         <p class="topbar-account-email">{{ $currentUser->email }}</p>
+                                        <p class="topbar-account-role">{{ $currentUser->role_label }}</p>
                                     </div>
 
                                     <form action="{{ route('logout', [], false) }}" method="POST" class="topbar-account-form">

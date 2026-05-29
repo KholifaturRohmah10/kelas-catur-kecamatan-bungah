@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\UserRole;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -22,6 +23,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
     ];
 
     /**
@@ -44,6 +46,33 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'role' => UserRole::class,
         ];
+    }
+
+    protected static function booted(): void
+    {
+        static::creating(function (self $user): void {
+            $user->role ??= UserRole::Admin;
+        });
+    }
+
+    public function hasRole(UserRole|string $role): bool
+    {
+        if (is_string($role)) {
+            $role = UserRole::tryFrom($role);
+        }
+
+        return $role !== null && $this->role === $role;
+    }
+
+    public function getRoleLabelAttribute(): string
+    {
+        return ($this->role ?? UserRole::Admin)->label();
+    }
+
+    public function getRoleDescriptionAttribute(): string
+    {
+        return ($this->role ?? UserRole::Admin)->description();
     }
 }
