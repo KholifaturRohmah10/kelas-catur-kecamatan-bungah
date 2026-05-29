@@ -17,6 +17,17 @@
             }
         }());
     </script>
+
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-RKVNSHF7MM"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-RKVNSHF7MM');
+</script>
+
     <link rel="stylesheet" href="{{ $themeCss }}">
     @yield('head')
 </head>
