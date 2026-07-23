@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_URI'] === '/run-migrations-12345') {
     $kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
     $kernel->bootstrap();
     try {
-        \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+        \Illuminate\Support\Facades\Artisan::call('migrate:fresh', ['--force' => true]);
         echo "Migrations completed: " . \Illuminate\Support\Facades\Artisan::output();
     } catch (\Throwable $e) {
         echo "Migration Error: " . $e->getMessage();
