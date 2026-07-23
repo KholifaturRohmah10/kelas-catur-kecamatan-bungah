@@ -32,8 +32,8 @@ class BypassAuthenticationWhenEnabled
             $user = User::query()->firstOrCreate(
                 ['email' => (string) config('auth.login_bypass.email')],
                 [
-                    'name' => (string) config('auth.login_bypass.name'),
-                    'password' => bin2hex(random_bytes(16)),
+                    'nama' => (string) config('auth.login_bypass.name'),
+                    'kata_sandi' => bin2hex(random_bytes(16)),
                 ],
             );
 
