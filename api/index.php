@@ -28,4 +28,15 @@ if ((string) getenv('VERCEL') === '1') {
     $_SERVER['PHP_SELF'] = '/index.php';
 }
 
-require __DIR__.'/../public/index.php';
+try {
+    require __DIR__.'/../public/index.php';
+} catch (\Throwable $e) {
+    http_response_code(500);
+    echo "<h1>CRITICAL STARTUP ERROR</h1>";
+    echo "<p><strong>Message:</strong> " . $e->getMessage() . "</p>";
+    echo "<p><strong>File:</strong> " . $e->getFile() . ":" . $e->getLine() . "</p>";
+    echo "<pre>" . $e->getTraceAsString() . "</pre>";
+    echo "<hr><h3>Diagnostic Data:</h3>";
+    echo "APP_KEY Starts With: " . substr(getenv('APP_KEY'), 0, 10) . "...<br>";
+    echo "DB_HOST: " . getenv('DB_HOST') . "<br>";
+}
