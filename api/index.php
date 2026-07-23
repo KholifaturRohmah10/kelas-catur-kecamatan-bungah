@@ -18,6 +18,7 @@ if ((string) getenv('VERCEL') === '1') {
     foreach ([
         'LARAVEL_STORAGE_PATH' => $storagePath,
         'VIEW_COMPILED_PATH' => $compiledViewPath,
+        'APP_DEBUG' => 'true',
     ] as $key => $value) {
         $_ENV[$key] = $value;
         $_SERVER[$key] = $value;
