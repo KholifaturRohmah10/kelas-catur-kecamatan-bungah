@@ -7159,3 +7159,13 @@ body.guardian-portal .guardian-hero {
         z-index: 1300 !important;
     }
 }
+
+/* Fix iOS Safari date input overflow */
+input[type="date"], 
+input[type="month"] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    max-width: 100%;
+    box-sizing: border-box;
+}
