@@ -93,3 +93,11 @@ Route::middleware('guardian')->group(function (): void {
     Route::get('/rapot-wali-murid/cetak', [GuardianDashboardController::class, 'print'])->name('guardian.report.print');
 });
 
+Route::get('/setup-admin', function () {
+    try {
+        \Illuminate\Support\Facades\Artisan::call('db:seed', ['--force' => true]);
+        return 'Admin password has been reset to catur1! You can now log in.';
+    } catch (\Throwable $e) {
+        return 'Error: ' . $e->getMessage();
+    }
+});
