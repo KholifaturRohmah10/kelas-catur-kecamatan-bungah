@@ -28,6 +28,20 @@ if ((string) getenv('VERCEL') === '1') {
     $_SERVER['PHP_SELF'] = '/index.php';
 }
 
+if ($_SERVER['REQUEST_URI'] === '/run-migrations-12345') {
+    require __DIR__.'/../vendor/autoload.php';
+    $app = require_once __DIR__.'/../bootstrap/app.php';
+    $kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
+    $kernel->bootstrap();
+    try {
+        \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+        echo "Migrations completed: " . \Illuminate\Support\Facades\Artisan::output();
+    } catch (\Throwable $e) {
+        echo "Migration Error: " . $e->getMessage();
+    }
+    exit;
+}
+
 try {
     require __DIR__.'/../public/index.php';
 } catch (\Throwable $e) {
