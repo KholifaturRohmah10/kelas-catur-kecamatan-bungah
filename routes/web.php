@@ -92,3 +92,8 @@ Route::middleware('guardian')->group(function (): void {
     Route::get('/rapot-wali-murid', [GuardianDashboardController::class, 'report'])->name('guardian.report');
     Route::get('/rapot-wali-murid/cetak', [GuardianDashboardController::class, 'print'])->name('guardian.report.print');
 });
+
+Route::get('/run-migrations-12345', function () {
+    \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+    return 'Migrations completed: ' . \Illuminate\Support\Facades\Artisan::output();
+});
