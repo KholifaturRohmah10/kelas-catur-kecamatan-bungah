@@ -93,20 +93,3 @@ Route::middleware('guardian')->group(function (): void {
     Route::get('/rapot-wali-murid/cetak', [GuardianDashboardController::class, 'print'])->name('guardian.report.print');
 });
 
-Route::get('/run-migrations-12345', function () {
-    try {
-        \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
-        return 'Migrations completed: ' . \Illuminate\Support\Facades\Artisan::output();
-    } catch (\Throwable $e) {
-        return 'Error: ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine();
-    }
-});
-
-Route::get('/test-db', function () {
-    try {
-        $result = \Illuminate\Support\Facades\DB::select('select 1 as ok');
-        return 'DB connection OK: ' . json_encode($result);
-    } catch (\Throwable $e) {
-        return 'DB Error: ' . $e->getMessage();
-    }
-});
