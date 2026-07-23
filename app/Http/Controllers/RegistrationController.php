@@ -17,18 +17,20 @@ class RegistrationController extends Controller
         $endOfWeek = Carbon::now()->endOfWeek(Carbon::SUNDAY);
 
         $students = Student::query()
-            ->whereBetween('registration_date', [$startOfWeek->toDateString(), $endOfWeek->toDateString()])
-            ->latest('registration_date')
+            ->whereBetween('tanggal_daftar', [$startOfWeek->toDateString(), $endOfWeek->toDateString()])
+            ->latest('tanggal_daftar')
             ->latest('created_at')
             ->get();
 
-        return view('registrations.index', compact('students', 'startOfWeek', 'endOfWeek'));
+        $nextStudentCode = $this->generateStudentCode();
+
+        return view('registrations.index', compact('students', 'startOfWeek', 'endOfWeek', 'nextStudentCode'));
     }
 
     public function store(Request $request): RedirectResponse
     {
         $validated = $this->validatedData($request, false);
-        $validated['student_code'] = $this->generateStudentCode();
+        $validated['kode_siswa'] = $this->generateStudentCode();
         $validated['status'] = 'Aktif';
 
         Student::create($validated);
@@ -64,15 +66,15 @@ class RegistrationController extends Controller
     private function validatedData(Request $request, bool $isEdit): array
     {
         $rules = [
-            'name' => ['required', 'string', 'max:255'],
-            'gender' => ['required', Rule::in(['Laki-laki', 'Perempuan'])],
-            'birth_date' => ['required', 'date'],
-            'school_name' => ['required', 'string', 'max:255'],
-            'parent_name' => ['required', 'string', 'max:255'],
-            'phone' => ['required', 'string', 'max:30'],
-            'address' => ['required', 'string'],
-            'registration_date' => ['required', 'date'],
-            'notes' => ['nullable', 'string'],
+            'nama' => ['required', 'string', 'max:255'],
+            'jenis_kelamin' => ['required', Rule::in(['Laki-laki', 'Perempuan'])],
+            'tanggal_lahir' => ['required', 'date'],
+            'asal_sekolah' => ['required', 'string', 'max:255'],
+            'nama_wali' => ['required', 'string', 'max:255'],
+            'telepon' => ['required', 'string', 'max:30'],
+            'alamat' => ['required', 'string'],
+            'tanggal_daftar' => ['required', 'date'],
+            'catatan' => ['nullable', 'string'],
         ];
 
         if ($isEdit) {
@@ -84,12 +86,13 @@ class RegistrationController extends Controller
 
     private function generateStudentCode(): string
     {
+        $prefix = date('ym');
         $nextNumber = ((int) Student::max('id')) + 1;
 
         do {
-            $code = 'CATUR-'.str_pad((string) $nextNumber, 3, '0', STR_PAD_LEFT);
+            $code = $prefix . str_pad((string) $nextNumber, 3, '0', STR_PAD_LEFT);
             $nextNumber++;
-        } while (Student::where('student_code', $code)->exists());
+        } while (Student::where('kode_siswa', $code)->exists());
 
         return $code;
     }

@@ -13,23 +13,23 @@ class DashboardController extends Controller
     public function index(): View
     {
         $currentMonthKey = now()->format('Y-m');
-        $totalScores = StudentScore::count();
-        $passedScores = StudentScore::where('score', '>', 60)->count();
+        $totalScores = StudentScore::scorable()->count();
+        $passedScores = StudentScore::scorable()->where('nilai', '>', 60)->count();
 
         $stats = [
             'total_students' => Student::count(),
             'total_sessions' => ClassSession::count(),
-            'average_score' => round((float) (StudentScore::avg('score') ?? 0), 1),
+            'average_score' => round((float) (StudentScore::scorable()->avg('nilai') ?? 0), 1),
             'pass_rate' => $totalScores > 0 ? round(($passedScores / $totalScores) * 100, 1) : 0,
         ];
 
         $latestSessions = ClassSession::query()
             ->withCount([
-                'scores as passed_students_count' => fn ($query) => $query->where('score', '>', 60),
-                'scores as participant_count',
+                'scores as passed_students_count' => fn ($query) => $query->scorable()->where('nilai', '>', 60),
+                'scores as participant_count' => fn ($query) => $query->scorable(),
             ])
-            ->withAvg('scores as average_score', 'score')
-            ->orderByDesc('session_date')
+            ->withAvg(['scores as average_score' => fn ($query) => $query->scorable()], 'nilai')
+            ->orderByDesc('tanggal')
             ->take(2)
             ->get();
 

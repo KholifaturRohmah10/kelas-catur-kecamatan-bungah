@@ -16,28 +16,28 @@ class ProgressController extends Controller
 
         $sessions = ClassSession::query()
             ->withCount([
-                'scores as passed_students_count' => fn ($query) => $query->where('score', '>', 60),
-                'scores as participant_count',
+                'scores as passed_students_count' => fn ($query) => $query->scorable()->where('nilai', '>', 60),
+                'scores as participant_count' => fn ($query) => $query->scorable(),
             ])
-            ->orderBy('session_date')
+            ->orderBy('tanggal')
             ->get();
 
         $chartSessions = $sessions
-            ->filter(fn (ClassSession $session): bool => $session->session_date !== null && $session->session_date->gte($chartWindowStart))
+            ->filter(fn (ClassSession $session): bool => $session->tanggal !== null && $session->tanggal->gte($chartWindowStart))
             ->values();
 
         $studentProgress = Student::query()
             ->withCount([
-                'scores as session_count',
+                'scores as session_count' => fn ($query) => $query->scorable(),
             ])
-            ->withAvg('scores as average_score', 'score')
+            ->withAvg(['scores as average_score' => fn ($query) => $query->scorable()], 'nilai')
             ->orderByDesc('session_count')
             ->orderByDesc('average_score')
-            ->orderBy('name')
+            ->orderBy('nama')
             ->get();
 
-        $totalScores = StudentScore::count();
-        $passedScores = StudentScore::where('score', '>', 60)->count();
+        $totalScores = StudentScore::scorable()->count();
+        $passedScores = StudentScore::scorable()->where('nilai', '>', 60)->count();
 
         $overview = [
             'materials_count' => $sessions->count(),

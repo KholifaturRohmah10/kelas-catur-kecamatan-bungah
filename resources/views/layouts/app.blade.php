@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title', 'Dashboard') | {{ config('app.name') }}</title>
     @php($themeCss = '/css/kelas-catur.css?v='.(file_exists(public_path('css/kelas-catur.css')) ? filemtime(public_path('css/kelas-catur.css')) : '1'))
-    @php($brandImage = '/images/logo-gresik.png?v='.(file_exists(public_path('images/logo-gresik.png')) ? filemtime(public_path('images/logo-gresik.png')) : '1'))
     <script>
         (function () {
             try {
@@ -29,15 +28,22 @@
 </script>
 
     <link rel="stylesheet" href="{{ $themeCss }}">
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
     @yield('head')
 </head>
-<body>
+<body class="{{ isset($guardianStudent) ? 'guardian-portal' : '' }}">
+    <script>
+        (function() {
+            try {
+                if (localStorage.getItem('kelas-catur-sidebar-collapsed') === 'true') {
+                    document.body.classList.add('sidebar-collapsed');
+                }
+            } catch (e) {}
+        })();
+    </script>
     <button class="sidebar-backdrop" type="button" aria-hidden="true" tabindex="-1" data-sidebar-backdrop></button>
 
     <div class="shell">
-        @php($currentUser = auth()->user())
-        @php($topbarUserInitial = $currentUser ? (string) \Illuminate\Support\Str::of($currentUser->name)->trim()->substr(0, 1)->upper() : '')
-
         <aside class="sidebar" id="app-sidebar">
             <button class="sidebar-close" type="button" aria-label="Tutup menu" data-sidebar-close>
                 <span class="sidebar-close-icon" aria-hidden="true"></span>
@@ -45,7 +51,7 @@
 
             <div class="brand">
                 <div class="brand-mark">
-                    <img src="{{ $brandImage }}" alt="Lambang Kabupaten Gresik">
+                    <img src="{{ '/images/logo-gresik.png?v='.(file_exists(public_path('images/logo-gresik.png')) ? filemtime(public_path('images/logo-gresik.png')) : '1') }}" alt="Lambang Kabupaten Gresik">
                 </div>
                 <div class="brand-copy-block">
                     <h1 class="brand-title">KELAS CATUR</h1>
@@ -53,48 +59,75 @@
                 </div>
             </div>
             <nav class="nav">
-                <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}">
-                    <span class="nav-icon" aria-hidden="true">
-                        <svg viewBox="0 0 24 24"><path d="M4 10.5 12 4l8 6.5"/><path d="M6.5 10v9h11v-9"/><path d="M10 19v-5h4v5"/></svg>
-                    </span>
-                    <span>Dashboard</span>
-                </a>
-                <a class="nav-link {{ request()->routeIs('registrations.*') ? 'active' : '' }}" href="{{ route('registrations.index') }}">
-                    <span class="nav-icon" aria-hidden="true">
-                        <svg viewBox="0 0 24 24"><path d="M8 7h8"/><path d="M8 11h8"/><path d="M8 15h5"/><path d="M6 3.5h12A1.5 1.5 0 0 1 19.5 5v14A1.5 1.5 0 0 1 18 20.5H6A1.5 1.5 0 0 1 4.5 19V5A1.5 1.5 0 0 1 6 3.5Z"/></svg>
-                    </span>
-                    <span>Daftar</span>
-                </a>
-                <a class="nav-link {{ request()->routeIs('students.*') ? 'active' : '' }}" href="{{ route('students.index') }}">
-                    <span class="nav-icon" aria-hidden="true">
-                        <svg viewBox="0 0 24 24"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/><path d="M5 20a7 7 0 0 1 14 0"/></svg>
-                    </span>
-                    <span>Data Siswa</span>
-                </a>
-                <a class="nav-link {{ request()->routeIs('sessions.*') ? 'active' : '' }}" href="{{ route('sessions.index') }}">
-                    <span class="nav-icon" aria-hidden="true">
-                        <svg viewBox="0 0 24 24"><path d="M7 3v3"/><path d="M17 3v3"/><path d="M4.5 8h15"/><path d="M6 5h12A1.5 1.5 0 0 1 19.5 6.5V19A1.5 1.5 0 0 1 18 20.5H6A1.5 1.5 0 0 1 4.5 19V6.5A1.5 1.5 0 0 1 6 5Z"/><path d="M8 12h3"/><path d="M13 12h3"/><path d="M8 16h3"/></svg>
-                    </span>
-                    <span>Jadwal Kelas</span>
-                </a>
-                <a class="nav-link {{ request()->routeIs('session-history.*') ? 'active' : '' }}" href="{{ route('session-history.index') }}">
-                    <span class="nav-icon" aria-hidden="true">
-                        <svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 2.35-5.65"/><path d="M4 5v5h5"/><path d="M12 8v4l3 2"/></svg>
-                    </span>
-                    <span>Riwayat Kelas</span>
-                </a>
-                <a class="nav-link {{ request()->routeIs('progress.*') ? 'active' : '' }}" href="{{ route('progress.index') }}">
-                    <span class="nav-icon" aria-hidden="true">
-                        <svg viewBox="0 0 24 24"><path d="M4 19h16"/><path d="M7 16v-5"/><path d="M12 16V7"/><path d="M17 16v-8"/><path d="m6 9 5-4 4 3 3-4"/></svg>
-                    </span>
-                    <span>Perkembangan Siswa</span>
-                </a>
-                <a class="nav-link {{ request()->routeIs('reports.*') ? 'active' : '' }}" href="{{ route('reports.index') }}">
-                    <span class="nav-icon" aria-hidden="true">
-                        <svg viewBox="0 0 24 24"><path d="M7 3.5h7l3 3V20A1.5 1.5 0 0 1 15.5 21.5h-9A1.5 1.5 0 0 1 5 20V5A1.5 1.5 0 0 1 6.5 3.5Z"/><path d="M14 3.5V7h3.5"/><path d="M8 12h6"/><path d="M8 16h5"/></svg>
-                    </span>
-                    <span>Cetak Rapot</span>
-                </a>
+                @if (isset($guardianStudent))
+                    <a class="nav-link {{ request()->routeIs('guardian.dashboard') ? 'active' : '' }}" href="{{ route('guardian.dashboard') }}">
+                        <span class="nav-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24"><path d="M4 10.5 12 4l8 6.5"/><path d="M6.5 10v9h11v-9"/><path d="M10 19v-5h4v5"/></svg>
+                        </span>
+                        <span>Dashboard</span>
+                    </a>
+                    <a class="nav-link {{ request()->routeIs('guardian.materials') ? 'active' : '' }}" href="{{ route('guardian.materials') }}">
+                        <span class="nav-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24"><path d="M7 3v3"/><path d="M17 3v3"/><path d="M4.5 8h15"/><path d="M6 5h12A1.5 1.5 0 0 1 19.5 6.5V19A1.5 1.5 0 0 1 18 20.5H6A1.5 1.5 0 0 1 4.5 19V6.5A1.5 1.5 0 0 1 6 5Z"/><path d="M8 12h3"/><path d="M13 12h3"/><path d="M8 16h3"/></svg>
+                        </span>
+                        <span>Jadwal Materi</span>
+                    </a>
+                    <a class="nav-link {{ request()->routeIs('guardian.progress') ? 'active' : '' }}" href="{{ route('guardian.progress') }}">
+                        <span class="nav-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24"><path d="M4 19h16"/><path d="M7 16v-5"/><path d="M12 16V7"/><path d="M17 16v-8"/><path d="m6 9 5-4 4 3 3-4"/></svg>
+                        </span>
+                        <span>Perkembangan Siswa</span>
+                    </a>
+                    <a class="nav-link {{ request()->routeIs('guardian.report') ? 'active' : '' }}" href="{{ route('guardian.report') }}">
+                        <span class="nav-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24"><path d="M7 3.5h7l3 3V20A1.5 1.5 0 0 1 15.5 21.5h-9A1.5 1.5 0 0 1 5 20V5A1.5 1.5 0 0 1 6.5 3.5Z"/><path d="M14 3.5V7h3.5"/><path d="M8 12h6"/><path d="M8 16h5"/></svg>
+                        </span>
+                        <span>Rapot</span>
+                    </a>
+                @else
+                    <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}">
+                        <span class="nav-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24"><path d="M4 10.5 12 4l8 6.5"/><path d="M6.5 10v9h11v-9"/><path d="M10 19v-5h4v5"/></svg>
+                        </span>
+                        <span>Dashboard</span>
+                    </a>
+                    <a class="nav-link {{ request()->routeIs('registrations.*') ? 'active' : '' }}" href="{{ route('registrations.index') }}">
+                        <span class="nav-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24"><path d="M8 7h8"/><path d="M8 11h8"/><path d="M8 15h5"/><path d="M6 3.5h12A1.5 1.5 0 0 1 19.5 5v14A1.5 1.5 0 0 1 18 20.5H6A1.5 1.5 0 0 1 4.5 19V5A1.5 1.5 0 0 1 6 3.5Z"/></svg>
+                        </span>
+                        <span>Daftar</span>
+                    </a>
+                    <a class="nav-link {{ request()->routeIs('students.*') ? 'active' : '' }}" href="{{ route('students.index') }}">
+                        <span class="nav-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/><path d="M5 20a7 7 0 0 1 14 0"/></svg>
+                        </span>
+                        <span>Data Siswa</span>
+                    </a>
+                    <a class="nav-link {{ request()->routeIs('sessions.*') ? 'active' : '' }}" href="{{ route('sessions.index') }}">
+                        <span class="nav-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24"><path d="M7 3v3"/><path d="M17 3v3"/><path d="M4.5 8h15"/><path d="M6 5h12A1.5 1.5 0 0 1 19.5 6.5V19A1.5 1.5 0 0 1 18 20.5H6A1.5 1.5 0 0 1 4.5 19V6.5A1.5 1.5 0 0 1 6 5Z"/><path d="M8 12h3"/><path d="M13 12h3"/><path d="M8 16h3"/></svg>
+                        </span>
+                        <span>Jadwal Kelas</span>
+                    </a>
+                    <a class="nav-link {{ request()->routeIs('session-history.*') ? 'active' : '' }}" href="{{ route('session-history.index') }}">
+                        <span class="nav-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 2.35-5.65"/><path d="M4 5v5h5"/><path d="M12 8v4l3 2"/></svg>
+                        </span>
+                        <span>Riwayat Kelas</span>
+                    </a>
+                    <a class="nav-link {{ request()->routeIs('progress.*') ? 'active' : '' }}" href="{{ route('progress.index') }}">
+                        <span class="nav-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24"><path d="M4 19h16"/><path d="M7 16v-5"/><path d="M12 16V7"/><path d="M17 16v-8"/><path d="m6 9 5-4 4 3 3-4"/></svg>
+                        </span>
+                        <span>Perkembangan Siswa</span>
+                    </a>
+                    <a class="nav-link {{ request()->routeIs('reports.*') ? 'active' : '' }}" href="{{ route('reports.index') }}">
+                        <span class="nav-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24"><path d="M7 3.5h7l3 3V20A1.5 1.5 0 0 1 15.5 21.5h-9A1.5 1.5 0 0 1 5 20V5A1.5 1.5 0 0 1 6.5 3.5Z"/><path d="M14 3.5V7h3.5"/><path d="M8 12h6"/><path d="M8 16h5"/></svg>
+                        </span>
+                        <span>Cetak Rapot</span>
+                    </a>
+                @endif
             </nav>
 
         </aside>
@@ -149,12 +182,16 @@
                             <span class="sr-only" data-theme-label>Mode</span>
                         </button>
 
-                        @if ($currentUser)
+                        @if (auth()->user() || isset($guardianStudent))
                             <div class="topbar-account" data-account-menu>
+                                @php($accountName = auth()->user()?->nama ?? ($guardianStudent->nama_wali ?? $guardianStudent->nama ?? ''))
+                                @php($accountSecondary = auth()->user()?->email ?? (isset($guardianStudent) ? 'Wali dari '.$guardianStudent->nama : ''))
+                                @php($accountRoleLabel = auth()->user()?->role_label ?? '')
+                                @php($topbarUserInitial = $accountName !== '' ? (string) \Illuminate\Support\Str::of($accountName)->trim()->substr(0, 1)->upper() : '')
                                 <button
                                     class="topbar-user"
                                     type="button"
-                                    aria-label="Buka menu akun {{ $currentUser->name }}"
+                                    aria-label="Buka menu akun {{ $accountName }}"
                                     aria-haspopup="true"
                                     aria-expanded="false"
                                     data-account-trigger
@@ -168,12 +205,16 @@
                                 <div class="topbar-account-panel" aria-hidden="true" data-account-panel>
                                     <div class="topbar-account-card">
                                         <span class="topbar-account-label">Masuk sebagai</span>
-                                        <strong class="topbar-account-name">{{ $currentUser->name }}</strong>
-                                        <p class="topbar-account-email">{{ $currentUser->email }}</p>
-                                        <p class="topbar-account-role">{{ $currentUser->role_label }}</p>
+                                        <strong class="topbar-account-name">{{ $accountName }}</strong>
+                                        @if ($accountRoleLabel !== '')
+                                            <p class="topbar-account-role">{{ $accountRoleLabel }}</p>
+                                        @endif
+                                        @if ($accountSecondary !== '')
+                                            <p class="topbar-account-email">{{ $accountSecondary }}</p>
+                                        @endif
                                     </div>
 
-                                    <form action="{{ route('logout', [], false) }}" method="POST" class="topbar-account-form">
+                                    <form action="{{ isset($guardianStudent) ? route('guardian.logout', [], false) : route('logout', [], false) }}" method="POST" class="topbar-account-form">
                                         @csrf
                                         <button class="topbar-account-logout" type="submit">
                                             <span class="btn-icon" aria-hidden="true">
@@ -189,13 +230,12 @@
                 </div>
             </header>
 
-            @include('partials.flash')
+            <div class="page-body">
+                @include('partials.flash')
 
-            @yield('content')
+                @yield('content')
+            </div>
 
-            <footer class="page-footer app-page-footer">
-                <span class="page-footer-text">Developed by @aemmaaa</span>
-            </footer>
         </main>
     </div>
 
@@ -314,11 +354,17 @@
             const closeDesktopSidebar = function () {
                 body.classList.add('sidebar-collapsed');
                 syncToggleState(false);
+                try {
+                    localStorage.setItem('kelas-catur-sidebar-collapsed', 'true');
+                } catch (e) {}
             };
 
             const openDesktopSidebar = function () {
                 body.classList.remove('sidebar-collapsed');
                 syncToggleState(true);
+                try {
+                    localStorage.setItem('kelas-catur-sidebar-collapsed', 'false');
+                } catch (e) {}
             };
 
             const syncSidebarMode = function () {
@@ -529,6 +575,22 @@
                 syncUppercaseValue(field);
             });
         }());
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('select[data-searchable]').forEach(function(el) {
+                new TomSelect(el, {
+                    plugins: ['dropdown_input'],
+                    create: false,
+                    sortField: {
+                        field: "text",
+                        direction: "asc"
+                    }
+                });
+            });
+        });
     </script>
 
     @yield('scripts')

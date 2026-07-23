@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\BypassAuthenticationWhenEnabled;
+use App\Http\Middleware\EnsureGuardianAuthenticated;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -16,6 +17,9 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->web(prepend: [
             BypassAuthenticationWhenEnabled::class,
+        ]);
+        $middleware->alias([
+            'guardian' => EnsureGuardianAuthenticated::class,
         ]);
         $middleware->redirectGuestsTo(fn () => route('login'));
         $middleware->redirectUsersTo(fn () => route('dashboard'));

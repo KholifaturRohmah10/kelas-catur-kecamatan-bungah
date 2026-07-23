@@ -7,7 +7,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Rapot {{ $student->name }} | KELAS CATUR Kecamatan Bungah</title>
+    <title>Rapot {{ $student->nama }} | KELAS CATUR Kecamatan Bungah</title>
     <link rel="stylesheet" href="{{ $themeCssHref }}">
 </head>
 <body class="report-body">
@@ -30,21 +30,29 @@
                 <tbody>
                     <tr>
                         <th>Nama Siswa</th>
-                        <td>{{ $student->name }}</td>
+                        <td>{{ $student->nama }}</td>
                         <th>Gender</th>
-                        <td>{{ $student->gender }}</td>
+                        <td>{{ $student->jenis_kelamin }}</td>
                     </tr>
                     <tr>
                         <th>Sekolah</th>
-                        <td>{{ $student->school_name ?: '-' }}</td>
+                        <td>{{ $student->asal_sekolah ?: '-' }}</td>
                         <th>Status</th>
                         <td>{{ $student->status }}</td>
                     </tr>
                     <tr>
                         <th>Orang Tua / Wali</th>
-                        <td>{{ $student->parent_name ?: '-' }}</td>
-                        <th>Tanggal Daftar</th>
-                        <td>{{ $student->registration_date?->translatedFormat('d F Y') ?: '-' }}</td>
+                        <td>{{ $student->nama_wali ?: '-' }}</td>
+                        @if (!empty($semesterLabel))
+                            <th>Semester</th>
+                            <td>{{ str_replace('Semester ', '', $semesterLabel) }}</td>
+                        @elseif (isset($selectedRangeLabel) && $selectedRangeLabel !== 'Seluruh Waktu')
+                            <th>Periode</th>
+                            <td>{{ $selectedRangeLabel }}</td>
+                        @else
+                            <th>Tanggal Daftar</th>
+                            <td>{{ $student->tanggal_daftar?->translatedFormat('d F Y') ?: '-' }}</td>
+                        @endif
                     </tr>
                 </tbody>
             </table>
@@ -99,13 +107,13 @@
                             @foreach ($scores as $score)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $score->classSession->session_date->translatedFormat('d M Y') }}</td>
+                                    <td>{{ $score->classSession->tanggal->translatedFormat('d M Y') }}</td>
                                     <td>
-                                        <p class="report-material-title">{{ $score->classSession->title }}</p>
-                                        <p class="report-material-copy">{{ \Illuminate\Support\Str::limit($score->classSession->material, 72) }}</p>
+                                        <p class="report-material-title">{{ $score->classSession->judul }}</p>
+                                        <p class="report-material-copy">{{ \Illuminate\Support\Str::limit($score->classSession->materialPreviewText(), 72) }}</p>
                                     </td>
-                                    <td>{{ $score->score }}</td>
-                                    <td>{{ \App\Support\StudentPerformance::predicate((float) $score->score) }}</td>
+                                    <td>{{ $score->nilai }}</td>
+                                    <td>{{ \App\Support\StudentPerformance::predicate((float) $score->nilai) }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -124,7 +132,7 @@
                 <p class="report-meta">Mengetahui,</p>
                 <strong>Orang Tua / Wali</strong>
                 <div class="signature-space signature-space-compact"></div>
-                <strong>({{ $student->parent_name ?: '........................................' }})</strong>
+                <strong>({{ $student->nama_wali ?: '........................................' }})</strong>
             </article>
 
             <article class="signature-card signature-card-formal signature-card-mentor">
@@ -137,7 +145,11 @@
     </section>
 
     <div class="report-toolbar report-toolbar-bottom">
-        <a class="btn btn-secondary" href="{{ route('reports.index') }}">Kembali</a>
+        @if (isset($isGuardian) && $isGuardian)
+            <a class="btn btn-secondary" href="{{ route('guardian.report') }}">Kembali</a>
+        @else
+            <a class="btn btn-secondary" href="{{ route('reports.index') }}">Kembali</a>
+        @endif
         <button class="btn btn-primary" type="button" onclick="window.print()">Cetak</button>
     </div>
 </body>

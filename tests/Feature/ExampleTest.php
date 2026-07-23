@@ -7,9 +7,12 @@ use App\Models\ClassSession;
 use App\Models\Student;
 use App\Models\StudentScore;
 use App\Models\User;
+use App\Support\GuardianSession;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use PDOException;
 use Tests\TestCase;
 
@@ -187,6 +190,55 @@ class ExampleTest extends TestCase
         $response->assertSee('Riwayat Pertemuan');
     }
 
+    public function test_class_history_shows_all_sessions_before_month_filter_is_selected(): void
+    {
+        $user = User::factory()->create();
+        $maySession = $this->createClassSession([
+            'title' => 'Pertemuan Mei',
+            'tanggal' => '2026-05-30',
+        ]);
+        $juneSession = $this->createClassSession([
+            'title' => 'Pertemuan Juni',
+            'tanggal' => '2026-06-05',
+        ]);
+
+        $response = $this->actingAs($user)->get('/riwayat-kelas');
+
+        $response->assertOk();
+        $response->assertSee('Seluruh riwayat kelas');
+        $response->assertSee('Jumlah data: 2 pertemuan');
+        $response->assertSee($maySession->title);
+        $response->assertSee($juneSession->title);
+        $response->assertSee('Semua Data');
+    }
+
+    public function test_class_history_shows_session_count_for_selected_month(): void
+    {
+        $user = User::factory()->create();
+        $maySessionOne = $this->createClassSession([
+            'title' => 'Pertemuan Mei Pertama',
+            'tanggal' => '2026-05-03',
+        ]);
+        $maySessionTwo = $this->createClassSession([
+            'title' => 'Pertemuan Mei Kedua',
+            'tanggal' => '2026-05-30',
+        ]);
+        $juneSession = $this->createClassSession([
+            'title' => 'Pertemuan Juni',
+            'tanggal' => '2026-06-05',
+        ]);
+
+        $response = $this->actingAs($user)->get('/riwayat-kelas?month=2026-05');
+
+        $response->assertOk();
+        $response->assertSee('Riwayat bulan Mei 2026');
+        $response->assertSee('Jumlah data: 2 pertemuan');
+        $response->assertSee($maySessionOne->title);
+        $response->assertSee($maySessionTwo->title);
+        $response->assertDontSee($juneSession->title);
+        $response->assertSee('Semua Data');
+    }
+
     public function test_authenticated_user_can_open_print_all_scores_page(): void
     {
         $response = $this->actingAs(User::factory()->create())->get('/cetak-rapot/seluruh-nilai');
@@ -205,7 +257,7 @@ class ExampleTest extends TestCase
         $response->assertSee('Operator');
     }
 
-    public function test_registration_uppercases_student_identity_fields_before_saving(): void
+    public function test_registration_uppercases_siswa_identity_fields_before_saving(): void
     {
         $user = User::factory()->create();
 
@@ -224,6 +276,7 @@ class ExampleTest extends TestCase
         $response->assertRedirect('/daftar-kelas-catur');
         $this->assertDatabaseHas('students', [
             'name' => 'ADITYA PAMUNGKAS',
+            'school_name' => 'SD HARAPAN BANGSA',
             'parent_name' => 'WAHYU HIDAYAT',
             'address' => 'JL. MELATI NO. 3 BUNGAH',
         ]);
@@ -231,15 +284,16 @@ class ExampleTest extends TestCase
 
     public function test_session_title_is_uppercased_before_saving(): void
     {
+        Storage::fake('local');
         $user = User::factory()->create();
         $student = $this->createStudent();
 
         $response = $this->actingAs($user)->post('/jadwal-kelas', [
             'title' => 'latihan pembukaan sisilia',
-            'material' => 'materi tetap biasa',
-            'session_date' => '2026-05-25',
+            'material_file' => $this->fakeMaterialFile('materi-sisilia.pdf'),
+            'tanggal' => '2026-05-25',
             'notes' => 'catatan kecil',
-            'student_ids' => [$student->id],
+            'siswa_ids' => [$student->id],
             'scores' => [
                 $student->id => 88,
             ],
@@ -253,6 +307,7 @@ class ExampleTest extends TestCase
 
     public function test_nonactive_student_cannot_be_scored_in_new_session(): void
     {
+        Storage::fake('local');
         $user = User::factory()->create();
         $nonactiveStudent = $this->createStudent([
             'name' => 'Siswa Nonaktif',
@@ -263,10 +318,10 @@ class ExampleTest extends TestCase
             ->from('/jadwal-kelas')
             ->post('/jadwal-kelas', [
                 'title' => 'Latihan Taktik',
-                'material' => 'Fork dan pin',
-                'session_date' => '2026-05-25',
+                'material_file' => $this->fakeMaterialFile('latihan-taktik.pdf'),
+                'tanggal' => '2026-05-25',
                 'notes' => '',
-                'student_ids' => [$nonactiveStudent->id],
+                'siswa_ids' => [$nonactiveStudent->id],
                 'scores' => [
                     $nonactiveStudent->id => 80,
                 ],
@@ -274,10 +329,141 @@ class ExampleTest extends TestCase
 
         $response->assertRedirect('/jadwal-kelas');
         $response->assertSessionHasErrors([
-            'student_ids' => 'Siswa nonaktif tidak bisa dipilih untuk penilaian.',
+            'siswa_ids' => 'Siswa nonaktif tidak bisa dipilih untuk penilaian.',
         ]);
         $this->assertDatabaseCount('class_sessions', 0);
         $this->assertDatabaseCount('student_scores', 0);
+    }
+
+    public function test_active_student_can_be_marked_absent_and_material_stays_recorded(): void
+    {
+        Storage::fake('local');
+        $user = User::factory()->create();
+        $student = $this->createStudent([
+            'name' => 'Siswa Absen',
+        ]);
+
+        $response = $this->actingAs($user)->post('/jadwal-kelas', [
+            'title' => 'Latihan Strategi',
+            'material_file' => $this->fakeMaterialFile('strategi-tengah.pdf'),
+            'tanggal' => '2026-05-25',
+            'notes' => '',
+            'siswa_ids' => [$student->id],
+            'attendance' => [
+                $student->id => 'absent',
+            ],
+            'scores' => [
+                $student->id => '',
+            ],
+        ]);
+
+        $response->assertRedirect('/jadwal-kelas');
+        $this->assertDatabaseHas('student_scores', [
+            'siswa_id' => $student->id,
+            'attendance_status' => StudentScore::STATUS_ABSENT,
+            'score' => null,
+        ]);
+    }
+
+    public function test_guardian_materials_show_absent_status_for_recorded_session(): void
+    {
+        $student = $this->createStudent([
+            'name' => 'Siswa Absen',
+        ]);
+        $session = ClassSession::create([
+            'title' => 'Materi Absen',
+            'material' => 'Pertahanan dasar',
+            'tanggal' => '2026-05-25',
+            'notes' => null,
+        ]);
+
+        StudentScore::create([
+            'sesi_kelas_id' => $session->id,
+            'siswa_id' => $student->id,
+            'attendance_status' => StudentScore::STATUS_ABSENT,
+            'score' => null,
+        ]);
+
+        $response = $this->withSession([
+            GuardianSession::SESSION_KEY => $student->id,
+        ])->get('/jadwal-materi-wali-murid');
+
+        $response->assertOk();
+        $response->assertSee('MATERI ABSEN');
+        $response->assertSee('Absen');
+    }
+
+    public function test_guardian_can_open_uploaded_material_file(): void
+    {
+        Storage::fake('local');
+        $student = $this->createStudent([
+            'name' => 'Siswa File',
+        ]);
+        Storage::disk('local')->put('materials/materi-siswa-file.pdf', 'PDF-CONTENT');
+
+        $session = ClassSession::create([
+            'title' => 'Materi File',
+            'material' => 'materi-siswa-file.pdf',
+            'material_file_path' => 'materials/materi-siswa-file.pdf',
+            'material_file_name' => 'materi-siswa-file.pdf',
+            'material_file_mime' => 'application/pdf',
+            'tanggal' => '2026-05-26',
+            'notes' => null,
+        ]);
+
+        StudentScore::create([
+            'sesi_kelas_id' => $session->id,
+            'siswa_id' => $student->id,
+            'score' => 82,
+        ]);
+
+        $response = $this->withSession([
+            GuardianSession::SESSION_KEY => $student->id,
+        ])->get(route('sessions.material-file', $session));
+
+        $response->assertOk();
+        $response->assertHeader('content-type', 'application/pdf');
+    }
+
+    public function test_guardian_dashboard_shows_only_the_latest_material_summary(): void
+    {
+        $student = $this->createStudent([
+            'name' => 'Siswa Ringkasan',
+        ]);
+
+        $olderSession = ClassSession::create([
+            'title' => 'MATERI LAMA UNIK',
+            'material' => 'Materi lama yang tidak boleh muncul di ringkasan.',
+            'tanggal' => '2026-05-20',
+            'notes' => null,
+        ]);
+
+        $latestSession = ClassSession::create([
+            'title' => 'MATERI TERBARU UNIK',
+            'material' => 'Materi terbaru yang harus muncul di dashboard wali.',
+            'tanggal' => '2026-05-30',
+            'notes' => null,
+        ]);
+
+        StudentScore::create([
+            'sesi_kelas_id' => $olderSession->id,
+            'siswa_id' => $student->id,
+            'score' => 78,
+        ]);
+
+        StudentScore::create([
+            'sesi_kelas_id' => $latestSession->id,
+            'siswa_id' => $student->id,
+            'score' => 88,
+        ]);
+
+        $response = $this->withSession([
+            GuardianSession::SESSION_KEY => $student->id,
+        ])->get('/dashboard-wali-murid');
+
+        $response->assertOk();
+        $response->assertSee('MATERI TERBARU UNIK');
+        $response->assertDontSee('MATERI LAMA UNIK');
     }
 
     public function test_existing_score_for_now_nonactive_student_is_preserved_when_editing_session(): void
@@ -290,22 +476,22 @@ class ExampleTest extends TestCase
         $session = ClassSession::create([
             'title' => 'Materi Lama',
             'material' => 'Latihan dasar',
-            'session_date' => '2026-05-20',
+            'tanggal' => '2026-05-20',
             'notes' => null,
         ]);
 
         StudentScore::create([
-            'class_session_id' => $session->id,
-            'student_id' => $student->id,
+            'sesi_kelas_id' => $session->id,
+            'siswa_id' => $student->id,
             'score' => 74,
         ]);
 
         $response = $this->actingAs($user)->put("/riwayat-kelas/{$session->id}", [
             'title' => 'Materi Lama Revisi',
             'material' => 'Latihan dasar',
-            'session_date' => '2026-05-20',
+            'tanggal' => '2026-05-20',
             'notes' => 'Catatan revisi',
-            'student_ids' => [$student->id],
+            'siswa_ids' => [$student->id],
             'scores' => [
                 $student->id => 74,
             ],
@@ -318,8 +504,8 @@ class ExampleTest extends TestCase
             'notes' => 'Catatan revisi',
         ]);
         $this->assertDatabaseHas('student_scores', [
-            'class_session_id' => $session->id,
-            'student_id' => $student->id,
+            'sesi_kelas_id' => $session->id,
+            'siswa_id' => $student->id,
             'score' => 74,
         ]);
     }
@@ -334,13 +520,13 @@ class ExampleTest extends TestCase
         $session = ClassSession::create([
             'title' => 'Materi Lama',
             'material' => 'Latihan dasar',
-            'session_date' => '2026-05-20',
+            'tanggal' => '2026-05-20',
             'notes' => null,
         ]);
 
         StudentScore::create([
-            'class_session_id' => $session->id,
-            'student_id' => $student->id,
+            'sesi_kelas_id' => $session->id,
+            'siswa_id' => $student->id,
             'score' => 74,
         ]);
 
@@ -349,9 +535,9 @@ class ExampleTest extends TestCase
             ->put("/riwayat-kelas/{$session->id}", [
                 'title' => 'Materi Lama',
                 'material' => 'Latihan dasar',
-                'session_date' => '2026-05-20',
+                'tanggal' => '2026-05-20',
                 'notes' => null,
-                'student_ids' => [$student->id],
+                'siswa_ids' => [$student->id],
                 'scores' => [
                     $student->id => 80,
                 ],
@@ -362,8 +548,8 @@ class ExampleTest extends TestCase
             "scores.{$student->id}" => 'Nilai siswa nonaktif yang sudah tersimpan tidak bisa diubah.',
         ]);
         $this->assertDatabaseHas('student_scores', [
-            'class_session_id' => $session->id,
-            'student_id' => $student->id,
+            'sesi_kelas_id' => $session->id,
+            'siswa_id' => $student->id,
             'score' => 74,
         ]);
     }
@@ -381,7 +567,7 @@ class ExampleTest extends TestCase
     private function createStudent(array $overrides = []): Student
     {
         return Student::create(array_merge([
-            'student_code' => 'CATUR-'.str_pad((string) random_int(1, 999), 3, '0', STR_PAD_LEFT),
+            'kode_siswa' => 'CATUR-'.str_pad((string) random_int(1, 999), 3, '0', STR_PAD_LEFT),
             'name' => 'Siswa Uji',
             'gender' => 'Laki-laki',
             'birth_date' => '2014-01-01',
@@ -393,5 +579,20 @@ class ExampleTest extends TestCase
             'status' => 'Aktif',
             'notes' => null,
         ], $overrides));
+    }
+
+    private function createClassSession(array $overrides = []): ClassSession
+    {
+        return ClassSession::create(array_merge([
+            'title' => 'Pertemuan Uji',
+            'material' => 'Materi uji',
+            'tanggal' => '2026-05-01',
+            'notes' => null,
+        ], $overrides));
+    }
+
+    private function fakeMaterialFile(string $filename = 'materi.pdf'): UploadedFile
+    {
+        return UploadedFile::fake()->create($filename, 256, 'application/pdf');
     }
 }

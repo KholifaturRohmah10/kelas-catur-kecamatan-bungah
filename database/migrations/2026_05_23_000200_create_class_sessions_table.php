@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('class_sessions', function (Blueprint $table): void {
+        Schema::create('sesi_kelas', function (Blueprint $table): void {
             $table->id();
-            $table->string('title');
-            $table->date('session_date');
-            $table->text('material');
-            $table->text('notes')->nullable();
+            $table->string('judul');
+            $table->date('tanggal');
+            $table->text('materi');
+            $table->text('catatan')->nullable();
             $table->timestamps();
         });
     }
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('class_sessions');
+        Schema::dropIfExists('sesi_kelas');
     }
 };

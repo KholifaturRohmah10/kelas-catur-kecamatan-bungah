@@ -51,7 +51,7 @@
                             </div>
                             <div class="bar-value">{{ $session->passed_students_count }}</div>
                             <p class="bar-meta">dari {{ $session->participant_count }} siswa</p>
-                            <p class="bar-label">{{ \Illuminate\Support\Str::limit($session->title, 22) }}</p>
+                            <p class="bar-label">{{ \Illuminate\Support\Str::limit($session->judul, 22) }}</p>
                         </div>
                     @endforeach
                 </div>
@@ -85,7 +85,7 @@
                         @foreach ($studentProgress as $student)
                             <tr>
                                 <td data-label="Siswa">
-                                    <p class="student-name">{{ $student->name }}</p>
+                                    <p class="student-name">{{ $student->nama }}</p>
                                 </td>
                                 <td data-label="Pertemuan diikuti">{{ $student->session_count }}</td>
                                 <td data-label="IPS">{{ $student->average_score !== null ? number_format((float) $student->average_score, 1, ',', '.') : '-' }}</td>

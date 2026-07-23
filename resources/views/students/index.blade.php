@@ -39,6 +39,7 @@
                         <tr>
                             <th>Siswa</th>
                             <th>Gender</th>
+                            <th>Tanggal lahir</th>
                             <th>Status</th>
                             <th>Kontak</th>
                             <th>Tanggal daftar</th>
@@ -52,9 +53,20 @@
                                 <td class="student-primary-cell" data-label="Siswa">
                                     <button class="student-row-toggle" type="button" aria-expanded="false" data-student-toggle>
                                         <span class="student-row-toggle-copy">
-                                            <p class="student-name">{{ $student->name }}</p>
-                                            @if ($student->school_name)
-                                                <p class="student-meta">{{ $student->school_name }}</p>
+                                            <p class="student-name" style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+                                                <span>{{ $student->nama }}</span>
+                                                @if ($student->catatan)
+                                                    <span title="{{ $student->catatan }}" style="font-size: 0.82rem; color: #ea580c; font-weight: 700; font-style: italic; cursor: help;">* {{ Str::limit($student->catatan, 35) }}</span>
+                                                @endif
+                                            </p>
+                                            <p class="student-meta" style="font-weight: 500; color: var(--primary); display: flex; align-items: center; gap: 4px;">
+                                                Kode: <span class="student-code-text">{{ $student->kode_siswa }}</span>
+                                                <span class="copy-code-btn" style="cursor: pointer; color: #64748b; padding: 2px; display: inline-flex;" title="Salin Kode" onclick="event.preventDefault(); event.stopPropagation(); navigator.clipboard.writeText('{{ $student->kode_siswa }}').then(() => { const original = this.innerHTML; this.innerHTML = '<span style=\'color:var(--primary)\'>✓</span>'; setTimeout(() => this.innerHTML = original, 1500); });">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                                                </span>
+                                            </p>
+                                            @if ($student->asal_sekolah)
+                                                <p class="student-meta">{{ $student->asal_sekolah }}</p>
                                             @endif
                                         </span>
                                         <span class="student-row-toggle-hint" aria-hidden="true">
@@ -63,21 +75,26 @@
                                         </span>
                                     </button>
                                 </td>
-                                <td class="student-row-detail-cell" data-label="Gender">{{ $student->gender }}</td>
+                                <td class="student-row-detail-cell" data-label="Gender">{{ $student->jenis_kelamin }}</td>
+                                <td class="student-row-detail-cell" data-label="Tanggal lahir">{{ $student->tanggal_lahir?->translatedFormat('d M Y') ?? '-' }}</td>
                                 <td class="student-row-detail-cell" data-label="Status"><span class="badge {{ $statusBadgeClass }}">{{ $student->status }}</span></td>
                                 <td class="student-row-detail-cell" data-label="Kontak">
-                                    <p class="student-name">{{ $student->phone ?: '-' }}</p>
-                                    <p class="student-meta">{{ $student->parent_name ?: 'Wali belum diisi' }}</p>
-                                    <p class="student-meta student-address">{{ $student->address ?: 'Alamat belum diisi' }}</p>
+                                    <p class="student-name">{{ $student->telepon ?: '-' }}</p>
+                                    <p class="student-meta">{{ $student->nama_wali ?: 'Wali belum diisi' }}</p>
+                                    <p class="student-meta student-address">{{ $student->alamat ?: 'Alamat belum diisi' }}</p>
                                 </td>
-                                <td class="student-row-detail-cell" data-label="Tanggal daftar">{{ $student->registration_date?->translatedFormat('d M Y') ?? '-' }}</td>
+                                <td class="student-row-detail-cell" data-label="Tanggal daftar">{{ $student->tanggal_daftar?->translatedFormat('d M Y') ?? '-' }}</td>
                                 <td class="student-row-detail-cell" data-label="Aksi">
-                                    <div class="table-actions">
-                                        <a class="btn btn-light" href="{{ route('students.edit', $student) }}">Edit</a>
-                                        <form class="inline-form" action="{{ route('students.destroy', $student) }}" method="POST" onsubmit="return confirm('Hapus data siswa ini? Nilai yang berkaitan juga akan ikut terhapus.')">
+                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; min-width: 80px; max-width: 100px;">
+                                        <a class="btn btn-light" href="{{ route('students.edit', $student) }}" title="Edit" style="width: 100%; text-align: center; box-sizing: border-box; display: flex; justify-content: center; align-items: center; padding: 0.5rem;">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                                        </a>
+                                        <form action="{{ route('students.destroy', $student) }}" method="POST" onsubmit="return confirm('Hapus data siswa ini? Nilai yang berkaitan juga akan ikut terhapus.')" style="margin: 0; width: 100%; display: flex;">
                                             @csrf
                                             @method('DELETE')
-                                            <button class="btn btn-danger" type="submit">Hapus</button>
+                                            <button class="btn btn-danger" type="submit" title="Hapus" style="width: 100%; box-sizing: border-box; display: flex; justify-content: center; align-items: center; padding: 0.5rem;">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                                            </button>
                                         </form>
                                     </div>
                                 </td>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\UserRole;
 use App\Models\User;
 use App\Support\DatabaseConnectionState;
+use App\Support\GuardianSession;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,6 +16,10 @@ class AuthController extends Controller
 {
     public function create(Request $request): View|RedirectResponse
     {
+        if (GuardianSession::has($request)) {
+            return redirect()->route('guardian.dashboard');
+        }
+
         try {
             if (Auth::check()) {
                 return redirect()->route('dashboard');
@@ -37,6 +42,8 @@ class AuthController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
+        GuardianSession::logout($request);
+
         if ($this->isLoginBypassEnabled()) {
             $bypassRole = UserRole::tryFrom((string) config('auth.login_bypass.role', UserRole::Admin->value)) ?? UserRole::Admin;
 
@@ -48,12 +55,12 @@ class AuthController extends Controller
 
                 if ($isNewUser) {
                     $user->forceFill([
-                        'name' => (string) config('auth.login_bypass.name'),
-                        'password' => bin2hex(random_bytes(16)),
+                        'nama' => (string) config('auth.login_bypass.name'),
+                        'kata_sandi' => bin2hex(random_bytes(16)),
                     ]);
                 }
 
-                $user->role = $bypassRole;
+                $user->peran = $bypassRole;
                 $user->save();
             } catch (Throwable $exception) {
                 if (DatabaseConnectionState::isUnavailable($exception)) {
@@ -120,6 +127,7 @@ class AuthController extends Controller
     public function destroy(Request $request): RedirectResponse
     {
         Auth::logout();
+        GuardianSession::logout($request);
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();

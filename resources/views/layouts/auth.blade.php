@@ -26,10 +26,6 @@
         @yield('content')
     </div>
 
-    <footer class="page-footer auth-page-footer">
-        <span class="page-footer-text">Developed by @aemmaaa</span>
-    </footer>
-
     <script>
         (function () {
             const root = document.documentElement;

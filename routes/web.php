@@ -3,19 +3,28 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClassSessionController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\GuardianAuthController;
+use App\Http\Controllers\GuardianDashboardController;
 use App\Http\Controllers\ProgressController;
 use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\StudentController;
 use App\Support\DatabaseConnectionState;
+use App\Support\GuardianSession;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function (Request $request) {
     try {
-        return auth()->check()
-            ? redirect()->route('dashboard')
-            : redirect()->route('login');
+        if (auth()->check()) {
+            return redirect()->route('dashboard');
+        }
+
+        if (GuardianSession::has($request)) {
+            return redirect()->route('guardian.dashboard');
+        }
+
+        return redirect()->route('login');
     } catch (Throwable $exception) {
         if (DatabaseConnectionState::isUnavailable($exception)) {
             report($exception);
@@ -33,6 +42,10 @@ Route::get('/', function (Request $request) {
 
 Route::get('/login', [AuthController::class, 'create'])->name('login');
 Route::post('/login', [AuthController::class, 'store'])->name('login.attempt');
+
+Route::get('/login-wali-murid', [GuardianAuthController::class, 'create'])->name('guardian.login');
+Route::post('/login-wali-murid', [GuardianAuthController::class, 'store'])->name('guardian.login.attempt');
+Route::get('/materi-kelas/{classSession}/file', [ClassSessionController::class, 'materialFile'])->name('sessions.material-file');
 
 Route::middleware('auth')->group(function (): void {
     Route::post('/logout', [AuthController::class, 'destroy'])->name('logout');
@@ -66,6 +79,16 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/perkembangan-siswa', [ProgressController::class, 'index'])->name('progress.index');
 
     Route::get('/cetak-rapot', [ReportController::class, 'index'])->name('reports.index');
+    Route::post('/cetak-rapot/semester-config', [ReportController::class, 'saveSemesterConfig'])->name('reports.save-semester-config');
     Route::get('/cetak-rapot/seluruh-nilai', [ReportController::class, 'printAll'])->name('reports.print-all');
     Route::get('/cetak-rapot/{student}', [ReportController::class, 'show'])->name('reports.show');
+});
+
+Route::middleware('guardian')->group(function (): void {
+    Route::post('/logout-wali-murid', [GuardianAuthController::class, 'destroy'])->name('guardian.logout');
+    Route::get('/dashboard-wali-murid', [GuardianDashboardController::class, 'index'])->name('guardian.dashboard');
+    Route::get('/jadwal-materi-wali-murid', [GuardianDashboardController::class, 'materials'])->name('guardian.materials');
+    Route::get('/perkembangan-wali-murid', [GuardianDashboardController::class, 'progress'])->name('guardian.progress');
+    Route::get('/rapot-wali-murid', [GuardianDashboardController::class, 'report'])->name('guardian.report');
+    Route::get('/rapot-wali-murid/cetak', [GuardianDashboardController::class, 'print'])->name('guardian.report.print');
 });

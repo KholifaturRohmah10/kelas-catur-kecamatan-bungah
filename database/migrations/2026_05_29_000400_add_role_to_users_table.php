@@ -13,16 +13,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('role', 30)
+        Schema::table('pengguna', function (Blueprint $table) {
+            $table->string('peran', 30)
                 ->default(UserRole::Admin->value)
-                ->after('email')
+                ->after('kata_sandi')
                 ->index();
         });
 
-        DB::table('users')
-            ->whereNull('role')
-            ->update(['role' => UserRole::Admin->value]);
+        DB::table('pengguna')
+            ->whereNull('peran')
+            ->update(['peran' => UserRole::Admin->value]);
     }
 
     /**
@@ -30,9 +30,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropIndex(['role']);
-            $table->dropColumn('role');
+        Schema::table('pengguna', function (Blueprint $table) {
+            $table->dropIndex(['peran']);
+            $table->dropColumn('peran');
         });
     }
 };

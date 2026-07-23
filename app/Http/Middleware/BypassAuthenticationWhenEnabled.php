@@ -15,7 +15,16 @@ class BypassAuthenticationWhenEnabled
             return $next($request);
         }
 
-        if ($request->is('login') || trim($request->path(), '/') === '') {
+        if (
+            $request->is('login') ||
+            $request->is('login-wali-murid') ||
+            $request->is('dashboard-wali-murid') ||
+            $request->is('jadwal-materi-wali-murid') ||
+            $request->is('perkembangan-wali-murid') ||
+            $request->is('rapot-wali-murid') ||
+            $request->is('logout-wali-murid') ||
+            trim($request->path(), '/') === ''
+        ) {
             return $next($request);
         }
 

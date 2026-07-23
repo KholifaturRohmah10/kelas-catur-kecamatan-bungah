@@ -11,14 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('student_scores', function (Blueprint $table): void {
+        Schema::create('nilai_siswa', function (Blueprint $table): void {
             $table->id();
-            $table->foreignId('class_session_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('student_id')->constrained()->cascadeOnDelete();
-            $table->unsignedTinyInteger('score');
+            $table->foreignId('sesi_kelas_id')->constrained('sesi_kelas')->cascadeOnDelete();
+            $table->foreignId('siswa_id')->constrained('siswa')->cascadeOnDelete();
+            $table->unsignedTinyInteger('nilai');
             $table->timestamps();
 
-            $table->unique(['class_session_id', 'student_id']);
+            $table->unique(['sesi_kelas_id', 'siswa_id']);
         });
     }
 
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('student_scores');
+        Schema::dropIfExists('nilai_siswa');
     }
 };

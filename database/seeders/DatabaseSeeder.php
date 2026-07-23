@@ -25,15 +25,15 @@ class DatabaseSeeder extends Seeder
         $admin = User::query()
             ->where('email', $adminEmail)
             ->orWhere('email', 'admin@kelascatur.test')
-            ->orWhere('name', $adminName)
+            ->orWhere('nama', $adminName)
             ->first() ?? new User();
 
         $admin->forceFill([
-            'name' => $adminName,
+            'nama' => $adminName,
             'email' => $adminEmail,
-            'role' => $adminRole,
+            'peran' => $adminRole,
             'email_verified_at' => now(),
-            'password' => Hash::make($adminPassword),
+            'kata_sandi' => Hash::make($adminPassword),
         ])->save();
     }
 }

@@ -10,11 +10,6 @@
             <h3 class="hero-title">Ringkasan kelas hari ini</h3>
             <p class="hero-copy">Pantau siswa, pertemuan, nilai, dan rapot dari satu tempat.</p>
         </div>
-
-        <div class="hero-quote">
-            <strong>Prioritas</strong>
-            <p class="hero-copy">Lengkapi jadwal dan nilai terbaru.</p>
-        </div>
     </section>
 
     <section class="metric-grid dashboard-metric-grid">
@@ -55,17 +50,35 @@
             @else
                 <div class="list-stack dashboard-session-list">
                     @foreach ($latestSessions as $session)
-                        <div class="mini-card dashboard-compact-card">
-                            <div class="panel-header">
-                                <div>
-                                    <h4>{{ $session->title }}</h4>
-                                    <p>{{ $session->session_date->translatedFormat('d F Y') }}</p>
+                        <div class="mini-card dashboard-compact-card dashboard-insight-card">
+                            <div class="dashboard-insight-head">
+                                <div class="dashboard-insight-copy">
+                                    <h4>{{ $session->judul }}</h4>
+                                    <p class="dashboard-insight-meta">{{ $session->tanggal->translatedFormat('d F Y') }}</p>
                                 </div>
-                                <span class="badge">{{ $session->participant_count }} siswa</span>
+
+                                <div class="dashboard-insight-stat">
+                                    <span class="dashboard-insight-stat-label">Peserta</span>
+                                    <strong class="dashboard-insight-stat-value">{{ $session->participant_count }}</strong>
+                                </div>
                             </div>
-                            <p class="dashboard-session-material">{{ \Illuminate\Support\Str::limit($session->material, 140) }}</p>
+
+                            @if ($session->hasMaterialFile())
+                                <div class="material-reference">
+                                    <p class="dashboard-insight-body dashboard-session-material">{{ \Illuminate\Support\Str::limit($session->materialPreviewText(), 140) }}</p>
+                                    <div class="material-reference-actions">
+                                        @if ($session->materialTypeLabel())
+                                            <span class="chip">{{ $session->materialTypeLabel() }}</span>
+                                        @endif
+                                        <a class="material-link" href="{{ route('sessions.material-file', $session) }}" target="_blank" rel="noopener">Buka File</a>
+                                    </div>
+                                </div>
+                            @else
+                                <p class="dashboard-insight-body dashboard-session-material">{{ \Illuminate\Support\Str::limit($session->material, 140) }}</p>
+                            @endif
+
                             <div class="tag-stack spacer-top dashboard-session-tags">
-                                <span class="chip badge-accent">Rata-rata {{ number_format((float) $session->average_score, 1, ',', '.') }}</span>
+                                <span class="chip badge-accent">Rata-rata {{ $session->average_score !== null ? number_format((float) $session->average_score, 1, ',', '.') : '-' }}</span>
                                 <span class="chip dashboard-session-extra">{{ $session->passed_students_count }} siswa di atas 60</span>
                             </div>
                         </div>
@@ -90,15 +103,20 @@
             @else
                 <div class="list-stack dashboard-leader-list">
                     @foreach ($monthlyLeaders as $row)
-                        <div class="mini-card dashboard-compact-card">
-                            <div class="panel-header">
-                                <div>
-                                    <h4>{{ $row['student']->name }}</h4>
+                        <div class="mini-card dashboard-compact-card dashboard-insight-card">
+                            <div class="dashboard-insight-head">
+                                <div class="dashboard-insight-copy">
+                                    <h4>{{ $row['student']->nama }}</h4>
+                                    <p class="dashboard-insight-meta">{{ $row['current_month']['session_count'] }} pertemuan bulan ini</p>
                                 </div>
-                                <span class="badge">{{ number_format($row['current_month']['average'], 1, ',', '.') }}</span>
+
+                                <div class="dashboard-insight-stat">
+                                    <span class="dashboard-insight-stat-label">Indeks</span>
+                                    <strong class="dashboard-insight-stat-value">{{ number_format($row['current_month']['average'], 1, ',', '.') }}</strong>
+                                </div>
                             </div>
-                            <p>{{ $row['predicate'] }}</p>
-                            <p class="student-meta">{{ $row['current_month']['session_count'] }} pertemuan bulan ini</p>
+
+                            <p class="dashboard-insight-body">{{ $row['predicate'] }}</p>
                         </div>
                     @endforeach
                 </div>

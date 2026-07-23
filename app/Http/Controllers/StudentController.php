@@ -18,12 +18,12 @@ class StudentController extends Controller
             ->when($search !== '', function ($query) use ($search): void {
                 $query->where(function ($innerQuery) use ($search): void {
                     $innerQuery
-                        ->where('name', 'like', "%{$search}%")
-                        ->orWhere('student_code', 'like', "%{$search}%")
-                        ->orWhere('school_name', 'like', "%{$search}%");
+                        ->where('nama', 'like', "%{$search}%")
+                        ->orWhere('kode_siswa', 'like', "%{$search}%")
+                        ->orWhere('asal_sekolah', 'like', "%{$search}%");
                 });
             })
-            ->orderBy('name')
+            ->orderBy('nama')
             ->get();
 
         return view('students.index', compact('students', 'search'));
@@ -55,16 +55,16 @@ class StudentController extends Controller
     private function validatedData(Request $request): array
     {
         return $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'gender' => ['required', Rule::in(['Laki-laki', 'Perempuan'])],
-            'birth_date' => ['required', 'date'],
-            'school_name' => ['required', 'string', 'max:255'],
-            'parent_name' => ['required', 'string', 'max:255'],
-            'phone' => ['required', 'string', 'max:30'],
-            'address' => ['required', 'string'],
-            'registration_date' => ['required', 'date'],
+            'nama' => ['required', 'string', 'max:255'],
+            'jenis_kelamin' => ['required', Rule::in(['Laki-laki', 'Perempuan'])],
+            'tanggal_lahir' => ['required', 'date'],
+            'asal_sekolah' => ['required', 'string', 'max:255'],
+            'nama_wali' => ['required', 'string', 'max:255'],
+            'telepon' => ['required', 'string', 'max:30'],
+            'alamat' => ['required', 'string'],
+            'tanggal_daftar' => ['required', 'date'],
             'status' => ['required', Rule::in(['Aktif', 'Nonaktif'])],
-            'notes' => ['nullable', 'string'],
+            'catatan' => ['nullable', 'string'],
         ]);
     }
 }

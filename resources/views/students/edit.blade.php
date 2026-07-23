@@ -8,7 +8,7 @@
     <section class="panel">
         <div class="panel-header">
             <div>
-                <h3 class="panel-title">Perbarui Data {{ $student->name }}</h3>
+                <h3 class="panel-title">Perbarui Data {{ $student->nama }}</h3>
             </div>
         </div>
 

@@ -69,7 +69,7 @@
 
                 <div>
                     <h3 class="auth-form-title">Masuk dengan Email</h3>
-                    <p class="auth-form-copy">Gunakan email admin dan kata sandi untuk mengakses seluruh data kelas catur.</p>
+                    <p class="auth-form-copy">Gunakan email admin dan password untuk mengakses seluruh data kelas catur.</p>
                 </div>
             </div>
 
@@ -83,7 +83,7 @@
                 @endunless
 
                 <div class="form-group">
-                    <label for="email">Email admin</label>
+                    <label for="email">Email <span class="required-mark">*</span></label>
                     <input
                         id="email"
                         name="{{ config('auth.login_bypass.enabled') ? '' : 'email' }}"
@@ -98,7 +98,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="password">Kata sandi</label>
+                    <label for="password">Password <span class="required-mark">*</span></label>
                     <div class="password-field">
                         <input
                             id="password"
@@ -129,6 +129,11 @@
                 </label>
 
                 <button class="btn btn-primary auth-submit" type="submit">Masuk</button>
+
+                <div class="auth-alt-actions">
+                    <p class="auth-helper-copy">Jika Anda orang tua atau wali, gunakan portal khusus untuk melihat data anak.</p>
+                    <a class="btn btn-secondary" href="{{ route('guardian.login', [], false) }}">Masuk sebagai Wali Murid</a>
+                </div>
             </form>
         </section>
     </main>

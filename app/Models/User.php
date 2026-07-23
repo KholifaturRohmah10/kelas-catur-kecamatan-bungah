@@ -14,16 +14,18 @@ class User extends Authenticatable
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
+    protected $table = 'pengguna';
+
     /**
      * The attributes that are mass assignable.
      *
      * @var list<string>
      */
     protected $fillable = [
-        'name',
+        'nama',
         'email',
-        'password',
-        'role',
+        'kata_sandi',
+        'peran',
     ];
 
     /**
@@ -32,7 +34,7 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $hidden = [
-        'password',
+        'kata_sandi',
         'remember_token',
     ];
 
@@ -45,15 +47,25 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-            'role' => UserRole::class,
+            'kata_sandi' => 'hashed',
+            'peran' => UserRole::class,
         ];
+    }
+
+    public function getAuthPasswordName()
+    {
+        return 'kata_sandi';
+    }
+
+    public function getAuthPassword()
+    {
+        return $this->kata_sandi;
     }
 
     protected static function booted(): void
     {
         static::creating(function (self $user): void {
-            $user->role ??= UserRole::Admin;
+            $user->peran ??= UserRole::Admin;
         });
     }
 
@@ -63,16 +75,16 @@ class User extends Authenticatable
             $role = UserRole::tryFrom($role);
         }
 
-        return $role !== null && $this->role === $role;
+        return $role !== null && $this->peran === $role;
     }
 
     public function getRoleLabelAttribute(): string
     {
-        return ($this->role ?? UserRole::Admin)->label();
+        return ($this->peran ?? UserRole::Admin)->label();
     }
 
     public function getRoleDescriptionAttribute(): string
     {
-        return ($this->role ?? UserRole::Admin)->description();
+        return ($this->peran ?? UserRole::Admin)->description();
     }
 }

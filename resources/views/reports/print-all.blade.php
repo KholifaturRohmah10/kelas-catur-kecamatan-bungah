@@ -25,7 +25,7 @@
 
             <div class="report-meta report-meta-box">
                 <span class="identity-label">Indeks Pilihan</span>
-                <strong>{{ $selectedMonthLabel }}</strong>
+                <strong>{{ $selectedRangeLabel }}</strong>
             </div>
         </header>
 
@@ -40,28 +40,24 @@
                 <article class="report-block report-student-block">
                     <div class="report-student-header">
                         <div>
-                            <h2 class="report-student-title">{{ $row['student']->name }}</h2>
-                            @if ($row['student']->school_name)
-                                <p class="report-meta">{{ $row['student']->school_name }}</p>
+                            <h2 class="report-student-title">{{ $row['student']->nama }}</h2>
+                            @if ($row['student']->asal_sekolah)
+                                <p class="report-meta">{{ $row['student']->asal_sekolah }}</p>
                             @endif
                         </div>
 
                         <div class="report-student-badges">
                             <span class="report-score-note {{ $statusBadgeClass }}">{{ $row['student']->status }}</span>
                             <span class="report-score-note">
-                                Indeks {{ $selectedMonthLabel }}:
-                                {{ $row['selected_index'] ? number_format($row['selected_index']['average'], 1, ',', '.') : '-' }}
-                            </span>
-                            <span class="report-score-note">
-                                Rata-rata total:
-                                {{ $row['summary']['average_score'] !== null ? number_format($row['summary']['average_score'], 1, ',', '.') : '-' }}
+                                Indeks {{ $selectedRangeLabel }}:
+                                {{ $row['range_index'] ? number_format($row['range_index']['average'], 1, ',', '.') : '-' }}
                             </span>
                         </div>
                     </div>
 
-                    @if ($row['scores']->isEmpty())
+                    @if ($row['range_scores']->isEmpty())
                         <div class="empty-state spacer-top">
-                            Belum ada nilai untuk siswa ini.
+                            Belum ada nilai untuk siswa ini pada rentang waktu terpilih.
                         </div>
                     @else
                         <div class="table-shell report-table-shell spacer-top">
@@ -76,16 +72,16 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($row['scores'] as $score)
+                                    @foreach ($row['range_scores'] as $score)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $score->classSession->session_date->translatedFormat('d M Y') }}</td>
+                                            <td>{{ $score->classSession->tanggal->translatedFormat('d M Y') }}</td>
                                             <td>
-                                                <p class="report-material-title">{{ $score->classSession->title }}</p>
-                                                <p class="report-material-copy">{{ \Illuminate\Support\Str::limit($score->classSession->material, 90) }}</p>
+                                                <p class="report-material-title">{{ $score->classSession->judul }}</p>
+                                                <p class="report-material-copy">{{ \Illuminate\Support\Str::limit($score->classSession->materialPreviewText(), 90) }}</p>
                                             </td>
-                                            <td>{{ $score->score }}</td>
-                                            <td>{{ \App\Support\StudentPerformance::predicate((float) $score->score) }}</td>
+                                            <td>{{ $score->nilai }}</td>
+                                            <td>{{ \App\Support\StudentPerformance::predicate((float) $score->nilai) }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -98,7 +94,7 @@
     </section>
 
     <div class="report-toolbar report-toolbar-bottom report-toolbar-wide">
-        <a class="btn btn-secondary" href="{{ route('reports.index', ['month' => $selectedMonth]) }}">Kembali</a>
+        <a class="btn btn-secondary" href="{{ route('reports.index', ['start_month' => $startMonth, 'end_month' => $endMonth, 'show_all' => $showAll ? 1 : 0]) }}">Kembali</a>
         <button class="btn btn-primary" type="button" onclick="window.print()">Cetak</button>
     </div>
 </body>

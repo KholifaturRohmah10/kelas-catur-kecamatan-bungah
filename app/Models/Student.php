@@ -9,36 +9,45 @@ use Illuminate\Support\Str;
 
 class Student extends Model
 {
+    protected $table = 'siswa';
+
     protected $fillable = [
-        'student_code',
-        'name',
-        'gender',
-        'birth_date',
-        'school_name',
-        'parent_name',
-        'phone',
-        'address',
-        'registration_date',
+        'kode_siswa',
+        'nama',
+        'jenis_kelamin',
+        'tanggal_lahir',
+        'asal_sekolah',
+        'nama_wali',
+        'telepon',
+        'alamat',
+        'tanggal_daftar',
         'status',
-        'notes',
+        'catatan',
     ];
 
     protected function casts(): array
     {
         return [
-            'birth_date' => 'date',
-            'registration_date' => 'date',
+            'tanggal_lahir' => 'date',
+            'tanggal_daftar' => 'date',
         ];
     }
 
-    protected function name(): Attribute
+    protected function nama(): Attribute
     {
         return Attribute::make(
             set: fn (?string $value) => $value !== null ? Str::upper($value) : null,
         );
     }
 
-    protected function parentName(): Attribute
+    protected function namaWali(): Attribute
+    {
+        return Attribute::make(
+            set: fn (?string $value) => $value !== null ? Str::upper($value) : null,
+        );
+    }
+
+    protected function asalSekolah(): Attribute
     {
         return Attribute::make(
             set: fn (?string $value) => $value !== null ? Str::upper($value) : null,
@@ -54,6 +63,6 @@ class Student extends Model
 
     public function scores(): HasMany
     {
-        return $this->hasMany(StudentScore::class);
+        return $this->hasMany(StudentScore::class, 'siswa_id');
     }
 }

@@ -45,29 +45,32 @@
                 <div class="registration-list">
                     @foreach ($students as $student)
                         @php($statusBadgeClass = $student->status === 'Aktif' ? 'status-tag-active' : 'status-tag-inactive')
-                        <article class="registration-card">
+                        <article class="registration-card" onclick="window.location.href='{{ route('students.index', ['search' => $student->kode_siswa]) }}'" style="cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.05)';" onmouseout="this.style.transform='none'; this.style.boxShadow='var(--shadow-sm)';">
                             <div class="registration-top">
                                 <div>
-                                    <p class="student-name">{{ $student->name }}</p>
-                                    @if ($student->school_name)
-                                        <p class="student-meta">{{ $student->school_name }}</p>
+                                    <p class="student-name" style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+                                        <span>{{ $student->nama }}</span>
+                                        @if ($student->catatan)
+                                            <span title="{{ $student->catatan }}" style="font-size: 0.82rem; color: #ea580c; font-weight: 700; font-style: italic; cursor: help;">* {{ Str::limit($student->catatan, 35) }}</span>
+                                        @endif
+                                    </p>
+                                    <p class="student-meta" style="font-weight: 500; color: var(--primary); display: flex; align-items: center; gap: 4px;">
+                                        Kode: <span class="student-code-text">{{ $student->kode_siswa }}</span>
+                                        <span class="copy-code-btn" style="cursor: pointer; color: #64748b; padding: 2px; display: inline-flex;" title="Salin Kode" onclick="event.preventDefault(); event.stopPropagation(); navigator.clipboard.writeText('{{ $student->kode_siswa }}').then(() => { const original = this.innerHTML; this.innerHTML = '<span style=\'color:var(--primary)\'>✓</span>'; setTimeout(() => this.innerHTML = original, 1500); });">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                                        </span>
+                                    </p>
+                                    @if ($student->asal_sekolah)
+                                        <p class="student-meta">{{ $student->asal_sekolah }}</p>
                                     @endif
                                 </div>
                                 <span class="badge {{ $statusBadgeClass }}">{{ $student->status }}</span>
                             </div>
 
                             <div class="registration-meta-row">
-                                <span class="registration-date">Daftar {{ $student->registration_date->translatedFormat('d M Y') }}</span>
+                                <span class="registration-date">Daftar {{ $student->tanggal_daftar->translatedFormat('d M Y') }}</span>
                             </div>
 
-                            <div class="registration-actions">
-                                <a class="btn btn-light" href="{{ route('registrations.edit', $student) }}">Edit</a>
-                                <form class="inline-form" action="{{ route('registrations.destroy', $student) }}" method="POST" onsubmit="return confirm('Hapus data siswa ini?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="btn btn-danger" type="submit">Hapus</button>
-                                </form>
-                            </div>
                         </article>
                     @endforeach
                 </div>
